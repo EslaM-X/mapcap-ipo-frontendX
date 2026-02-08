@@ -1,42 +1,101 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
+/**
+ * MapCap Global Design System
+ * Inspired by Pi Network Aesthetics & Philip Jennings' Vision
+ * High-end Dark Theme with Glassmorphism and Neon Accents
+ */
+
+:root {
+  /* Core Brand Palette */
+  --pi-gold: #ffa500;
+  --pi-purple: #6b21a8;
+  --dark-bg: #020617;
+  
+  /* Semantic UI Colors */
+  --success-green: #22c55e;
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Root Layout Container */
+.mapcap-root {
+  background: var(--dark-bg);
+  color: white;
+  min-height: 100vh;
+  font-family: 'Orbitron', sans-serif; /* Tech-focused typography */
   padding: 2rem;
-  text-align: center;
+  overflow: hidden;
+  position: relative;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/**
+ * Background Grid Layer
+ * Creates a futuristic "Blueprint" effect using linear gradients
+ */
+.glass-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, #1e293b 1px, transparent 1px), 
+    linear-gradient(to bottom, #1e293b 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(circle, transparent 20%, black);
+  opacity: 0.3;
+  z-index: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Typography Enhancements */
+.gold-text { 
+  color: var(--pi-gold); 
+  text-shadow: 0 0 10px rgba(255, 165, 0, 0.5); 
 }
 
-.card {
-  padding: 2em;
+/**
+ * Statistics Display Cards
+ * Implementation of Glassmorphism: Blur + Low Opacity Background
+ */
+.stat-card {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(10px); /* Frosted glass effect */
+  border: 1px solid var(--glass-border);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  transition: transform 0.3s ease-in-out, border-color 0.3s;
+  position: relative;
+  z-index: 1;
 }
 
-.read-the-docs {
-  color: #888;
+.stat-card:hover { 
+  transform: translateY(-5px); 
+  border-color: var(--pi-gold); 
+}
+
+/**
+ * Primary Call-to-Action (CTA)
+ * High-visibility gradient button for Pi Wallet integration
+ */
+.pi-main-btn {
+  background: linear-gradient(45deg, var(--pi-purple), var(--pi-gold));
+  border: none;
+  padding: 1rem 2rem;
+  color: white;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(107, 33, 168, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/**
+ * Backend Audit Ledger Viewport
+ * Terminal-style logging for real-time MERN stack events
+ */
+.log-container {
+  background: #000000;
+  color: var(--success-green);
+  padding: 1rem;
+  font-family: 'Courier New', monospace; /* Monospaced for log readability */
+  border-radius: 0.5rem;
+  height: 120px;
+  overflow-y: auto;
+  border: 1px solid #333;
 }
