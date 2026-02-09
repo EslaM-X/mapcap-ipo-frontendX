@@ -1,33 +1,34 @@
 /**
- * MapCap IPO - Official Entry Point v1.1
- * Architected by Eslam Kora | AppDev @Map-of-Pi
+ * MapCap IPO - Official Entry Point v1.2
  * ---------------------------------------------------------
- * Purpose: 
- * 1. Bootstraps the React application into the DOM.
- * 2. Injects Global Styles (index.css) for the Single-Screen layout.
- * 3. Initializes the IpoProvider (Context API) to manage global Web3 state.
- * * Visionary: Philip Jennings & Daniel (Map-of-Pi)
+ * Lead Architect: Eslam Kora | AppDev @Map-of-Pi
+ * Project: MapCap Ecosystem Implementation
+ * * Purpose: 
+ * This is the root of the React tree. It initializes the DOM,
+ * injects foundational styles, and wraps the application in the
+ * IpoProvider to enable global Web3 state management.
  */
 
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-// Global styles following the 'Plain White Background' requirement [Source: Page 3]
+// 1. Injected Guardrail Styles: Ensures the Single-Screen Policy [Source: Page 8]
 import './index.css';
 
-// Core Application Engine
+// 2. Core Application Engine: The structural layout of the 33.33vh pillars
 import App from './App.jsx';
 
-// Global State Provider for Pi SDK & MERN Backend Synchronization
+// 3. Global State Orchestrator: Connects Pi SDK and MERN Backend
 import { IpoProvider } from './context/IpoContext';
 
 /**
- * Root Renderer
- * We wrap the <App /> with <IpoProvider> to enable the 'useIpo' custom hook 
- * throughout the entire component tree, ensuring real-time data integrity.
+ * ROOT RENDERER
+ * Wrapping <App /> with <IpoProvider> ensures that the 'useIpo' hook 
+ * works flawlessly across all functional components (Navbar, Stats, Actions).
  */
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    {/* The Provider serves as the 'Single Source of Truth' for Daniel's Audit trail */}
     <IpoProvider>
       <App />
     </IpoProvider>
