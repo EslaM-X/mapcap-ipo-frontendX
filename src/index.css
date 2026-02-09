@@ -2,64 +2,107 @@
  * MapCapIPO Global Base Styles
  * Following Philip Jennings' Specification v2026.02.06
  * Architected by Eslam Kora | AppDev @Map-of-Pi
+ * ---------------------------------------------------------
+ * This file enforces the architectural "Guardrails" required by Daniel
+ * to ensure UI consistency across all Pioneer devices.
  */
 
 :root {
-  /* Core Typography based on clean Inter/System interface */
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  /* Core Typography - Ensuring high readability on small screens */
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  /* Force Light Mode as per 'Plain White Background' requirement [Source: Page 3] */
+  /* STRICT COLOR SCHEME: Philip's "Plain White Background" [Source: Page 3] */
   color-scheme: light;
-  color: #333333;
+  color: #212121; /* High contrast dark grey for readability */
   background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* Prevent system font scaling from breaking the Single-Screen layout */
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
-  /* Ensure the app occupies the full Pi Browser viewport without scrolling */
+  padding: 0;
+  /* Occupy total Pi Browser viewport without vertical or horizontal bleed */
   width: 100vw;
   height: 100vh;
-  display: block; /* Override Vite's default flex centering */
-  overflow: hidden; /* Single-screen experience [Source: Page 7] */
+  display: block; 
+  overflow: hidden; /* Enforces the Page 7 single-screen requirement */
+  
+  /* Prevent 'pull-to-refresh' or 'bounce' effects common on mobile browsers */
+  overscroll-behavior-y: contain;
 }
 
-/* Base Link Styling - Following Map of Pi branding */
-a {
-  font-weight: 500;
+/* Global Root Container - Ensuring zero spacing issues */
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* Typography Overrides for MapCap Branding */
+h1, h2, h3 {
   color: #1b5e20; /* MapCap Green */
-  text-decoration: none;
+  margin: 0;
 }
 
-a:hover {
+/* Native Link Interaction - Following Map of Pi standards */
+a {
+  font-weight: 600;
+  color: #1b5e20;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover, a:active {
   color: #ffd700; /* MapCap Gold */
 }
 
-/* Global Reset for Input Fields and Buttons to match smartphone usability */
-button, input {
+/* Mobile Input Optimization: Prevents iOS/Android default styling overrides */
+button, input, select, textarea {
   font-family: inherit;
-  outline: none;
+  font-size: 100%;
+  margin: 0;
+  border: none;
+  -webkit-appearance: none; /* Removes default OS styling */
 }
 
-/** * Accessibility: Focus ring for Pioneer interaction 
- * [Source: Usability optimization for smartphones - Page 1]
- */
+/* Focus States for Accessibility during Audit */
 button:focus-visible {
-  outline: 2px solid #ffd700;
+  outline: 3px solid rgba(255, 215, 0, 0.5); /* Semi-transparent Gold */
+  outline-offset: 2px;
 }
 
-/* Remove default dark mode media queries to maintain document strictness */
+/**
+ * DARK MODE OVERRIDE [Critical Document Requirement]
+ * Force light mode even if the Pioneer's device is set to Dark Mode.
+ * This preserves the visibility of the Green Graph and Gold elements.
+ */
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Keep background white even if pioneer's device is in dark mode 
-       to ensure price graph visibility as per specification. */
-    background-color: #ffffff;
-    color: #333333;
+    background-color: #ffffff !important;
+    color: #212121 !important;
   }
+  
+  body {
+    background-color: #ffffff !important;
+  }
+}
+
+/* Utility to hide elements visually but keep them available for screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
