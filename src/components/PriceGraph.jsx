@@ -1,62 +1,71 @@
 /**
- * MapCap Spot-price Dynamic Graph
- * Architected by Eslam Kora | Based on Philip Jennings' Use Case [Page 3, 8]
- * * Purpose: Visualizes the real-time growth of the MapCap token spot price.
- * Technical Spec: Responsive SVG-based line chart with dynamic scaling logic.
+ * MapCap Spot-price Dynamic Graph (Context-Enabled)
+ * ---------------------------------------------------------
+ * Lead Architect: Eslam Kora | Spec: Philip Jennings [Page 3, 8]
+ * Project: MapCap Ecosystem | Map-of-Pi
+ * * Purpose: 
+ * Visualizes the 28-day price trajectory using SVG. 
+ * Consumes 'dailyPrices' from IpoContext for real-time market reflection.
  */
-import React from 'react';
 
-const PriceGraph = ({ dailyPrices = [] }) => {
-  // Configuration constants derived from the 4-week IPO roadmap [Source: 63]
+import React from 'react';
+import { useIpo } from '../context/IpoContext';
+
+const PriceGraph = () => {
+  // Consuming global metrics from Context
+  const { metrics, loading } = useIpo();
+  const { dailyPrices = [] } = metrics;
+
+  // Configuration constants for the 4-week roadmap [Source: Requirement 63]
   const TOTAL_DAYS = 28; 
-  const GRAPH_WIDTH = 320; // Available horizontal span for the timeline
-  const GRAPH_HEIGHT = 140; // Available vertical span for price movement
-  const X_OFFSET = 40;     // Left padding for Y-axis labels
-  const Y_OFFSET = 160;    // Bottom padding for X-axis labels
+  const GRAPH_WIDTH = 320; 
+  const GRAPH_HEIGHT = 140; 
+  const X_OFFSET = 40;     
+  const Y_OFFSET = 160;    
 
   /**
-   * Defensive Check: If the system is in 'Initial Minting' or Day 0,
-   * display a placeholder to maintain UI integrity as per Philip's spec.
+   * Placeholder Logic: Displays during initial handshake or if Day 0.
+   * Aligns with Philip's requirement for a "clean, professional entry".
    */
-  if (!dailyPrices || dailyPrices.length === 0) {
+  if (loading || !dailyPrices || dailyPrices.length === 0) {
     return (
       <div className="graph-container flex-center">
-        <div className="calculating-placeholder">
-          <p className="animate-pulse">Synchronizing Market Data...</p>
-          <small>Spot-price calculation starts on Day 1</small>
+        <div className="calculating-placeholder text-center">
+          <p className="animate-pulse" style={{color: 'var(--mapcap-green)', fontWeight: '600'}}>
+            Synchronizing Market Data...
+          </p>
+          <small style={{color: 'var(--text-muted)'}}>Spot-price calculation starts on Day 1</small>
         </div>
       </div>
     );
   }
 
   /**
-   * Dynamic Scaling Logic:
-   * Finds the maximum price in the current dataset to ensure the graph 
-   * remains visible regardless of the price magnitude.
+   * Dynamic Scaling: Normalizes the price points to fit the SVG viewport.
    */
-  const maxPrice = Math.max(...dailyPrices, 1); // Avoid division by zero
-  const yScaleFactor = GRAPH_HEIGHT / (maxPrice * 1.2); // Adding 20% overhead for visual comfort
+  const maxPrice = Math.max(...dailyPrices, 0.0001); 
+  const yScaleFactor = GRAPH_HEIGHT / (maxPrice * 1.2); 
 
   return (
     <div className="graph-container">
       <svg viewBox="0 0 400 200" className="mapcap-svg-graph" preserveAspectRatio="xMidYMid meet">
         
-        {/* X-AXIS: Represents the 4-calendar-week timeline */}
+        {/* X-AXIS: The 4-Calendar-Week Timeline */}
         <line x1={X_OFFSET} y1={Y_OFFSET} x2="360" y2={Y_OFFSET} className="axis-line" />
-        <text x={X_OFFSET} y={Y_OFFSET + 20} className="axis-label text-start">Week 1</text>
-        <text x="360" y={Y_OFFSET + 20} className="axis-label text-end">Week 4</text>
+        <text x={X_OFFSET} y={Y_OFFSET + 20} className="axis-label">Week 1</text>
+        <text x="360" y={Y_OFFSET + 20} className="axis-label" textAnchor="end">Week 4</text>
 
-        {/* Y-AXIS: Represents the Spot-price in Pi */}
+        {/* Y-AXIS: Price Magnitude in Pi */}
         <line x1={X_OFFSET} y1="20" x2={X_OFFSET} y2={Y_OFFSET} className="axis-line" />
         <text x="10" y={Y_OFFSET} className="axis-label">0 π</text>
-        <text x="10" y="30" className="axis-label highlight-price">
+        <text x="10" y="30" className="axis-label highlight-price" style={{fill: 'var(--mapcap-green)', fontWeight: '700'}}>
           {maxPrice.toFixed(4)}
         </text>
 
-        {/* DATA PATH: Generates the growth line based on daily back-end points */}
+        {/* GROWTH PATH: The core visualization of the 'Water-Level' growth */}
         <polyline
           fill="none"
-          stroke="#1b5e20" /* Official MapCap Green */
+          stroke="var(--mapcap-green)"
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -67,12 +76,10 @@ const PriceGraph = ({ dailyPrices = [] }) => {
           }).join(' ')}
         />
         
-        {/* DATA NODES: Circles at each data point for touch interaction/visibility */}
+        {/* NODES: Data points for visual clarity */}
         {dailyPrices.map((price, index) => {
           const x = X_OFFSET + (index * (GRAPH_WIDTH / (TOTAL_DAYS - 1)));
           const y = Y_OFFSET - (price * yScaleFactor);
-          
-          // Only highlight the 'Current Day' node with a larger radius
           const isCurrentDay = index === dailyPrices.length - 1;
           
           return (
@@ -80,14 +87,14 @@ const PriceGraph = ({ dailyPrices = [] }) => {
               key={index} 
               cx={x} 
               cy={y} 
-              r={isCurrentDay ? "5" : "3"} 
-              fill={isCurrentDay ? "#ffd700" : "#1b5e20"} /* Gold for current price */
+              r={isCurrentDay ? "6" : "3"} 
+              fill={isCurrentDay ? "var(--mapcap-gold)" : "var(--mapcap-green)"}
               className={isCurrentDay ? "glow-node" : ""}
             />
           );
         })}
 
-        {/* WATER-LEVEL INDICATOR: Optional visual aid for 'Water Level' formula [Source: Page 3] */}
+        {/* CURRENT PRICE INDICATOR: Horizontal dashed guideline [Source: Page 3] */}
         {dailyPrices.length > 0 && (
           <line 
             x1={X_OFFSET} 
@@ -100,8 +107,8 @@ const PriceGraph = ({ dailyPrices = [] }) => {
         )}
       </svg>
       
-      <div className="graph-footer-title">
-        Current MapCap Spot-price (Daily Growth)
+      <div className="graph-footer-title" style={{color: 'var(--mapcap-green)', fontSize: '0.8rem', marginTop: '5px', fontWeight: '600'}}>
+        Spot Price: {dailyPrices[dailyPrices.length - 1]?.toFixed(4)} Pi
       </div>
     </div>
   );
