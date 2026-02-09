@@ -1,12 +1,12 @@
 /**
- * MapCapIPO Official Design System v1.1
- * Architected by Eslam Kora | AppDev @Map-of-Pi
+ * MapCapIPO Official Design System v1.2
  * ---------------------------------------------------------
- * This stylesheet enforces Philip Jennings' "Single-Screen" vision.
- * Key Rules: 
- * - Fixed Viewport (No Scroll)
- * - MapCap Green (#1b5e20) & Gold (#ffd700)
- * - High-Precision SVG Graph Styling
+ * Lead Architect: Eslam Kora | AppDev @Map-of-Pi
+ * Project: MapCap Ecosystem | Spec: Philip Jennings
+ * * DESIGN PRINCIPLES:
+ * 1. Single-Screen Policy: Strictly 100vh with NO scrolling.
+ * 2. Visual Balance: 33.33% vertical distribution per logic pillar.
+ * 3. Brand Identity: MapCap Green (#1b5e20) and Gold (#ffd700).
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
@@ -20,22 +20,29 @@
   --text-muted: #666666;
   --input-bg: #f5f5f5;
   --transition: all 0.3s ease;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.1);
 }
 
+/* Global Reset for Mobile Viewports */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent; /* Mobile Optimization */
+  -webkit-tap-highlight-color: transparent;
+  user-select: none; /* Prevents accidental text selection in Pi Browser */
 }
 
 body, html {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   font-family: 'Inter', sans-serif;
   background-color: var(--pure-white);
   color: var(--text-main);
-  overflow: hidden; /* Strict Single-Screen Policy [Source: Page 8] */
+  overflow: hidden; /* Enforces Requirement [Page 8] */
+}
+
+#root {
+  height: 100vh;
 }
 
 .mapcap-root {
@@ -46,8 +53,8 @@ body, html {
 }
 
 /**
- * CORE LAYOUT: THREE PILLARS
- * Each section occupies exactly 33.33% of the height.
+ * ARCHITECTURAL LAYOUT: 3 PILLARS
+ * Each section occupies exactly 1/3 of the vertical viewport.
  */
 .section-top, 
 .section-middle, 
@@ -60,114 +67,114 @@ body, html {
   overflow: hidden;
 }
 
-/* --- SECTION 1: TOP (NAVBAR & GRAPH) --- */
+/* --- SECTION 1: BRANDING & MARKET DATA --- */
 
 .main-navbar {
   background-color: var(--mapcap-green);
   color: var(--mapcap-gold);
-  padding: 10px 0;
+  padding: 8px 0;
+  z-index: 10;
   box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 
 .navbar-title {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 700;
   text-align: center;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 5px;
+  letter-spacing: 1.2px;
+  margin-bottom: 4px;
 }
 
 .navbar-icons {
   display: flex;
-  justify-content: space-evenly;
-  padding: 5px 0;
+  justify-content: space-around;
+  align-items: center;
+  padding: 4px 10px;
 }
 
 .icon-gold {
   color: var(--mapcap-gold);
-  font-size: 1.2rem;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.active-btn:active {
+  transform: scale(0.9);
+  opacity: 0.7;
 }
 
 .graph-container {
   flex: 1;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 5px 15px;
+  padding: 5px 20px;
 }
 
 .mapcap-svg-graph {
   width: 100%;
-  max-width: 380px;
+  max-width: 400px;
   height: auto;
 }
 
-/* Graph Elements Styling */
-.axis-line { stroke: var(--mapcap-green); stroke-width: 1.5; }
-.axis-label { fill: var(--mapcap-green); font-size: 9px; font-weight: 600; }
-.price-guideline { stroke: #d1d1d1; stroke-width: 1; stroke-dasharray: 4; }
-.glow-node { filter: drop-shadow(0 0 4px var(--mapcap-gold)); }
-
-/* --- SECTION 2: MIDDLE (STATS LEDGER) --- */
+/* --- SECTION 2: TRANSPARENCY LEDGER (STATS) --- */
 
 .stats-panel {
-  padding: 10px 25px;
+  padding: 15px 25px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-bottom: 1px solid #f0f0f0;
+  background-color: #fafafa;
 }
 
 .section-title {
   color: var(--mapcap-green);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  margin-bottom: 12px;
-  text-transform: uppercase;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
 }
 
 .stats-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .stat-item {
   font-size: 0.85rem;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #f9f9f9;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .stat-label { color: var(--text-muted); }
 .stat-value { font-weight: 600; color: var(--mapcap-green); }
 
 .highlight-gain {
-  background-color: #f1f8e9; /* Light green tint */
-  padding: 8px;
-  border-radius: 6px;
+  background-color: #e8f5e9;
+  padding: 10px;
+  border-radius: 8px;
   border: 1px dashed var(--mapcap-green);
-  color: var(--mapcap-green);
-  font-weight: 700;
+  margin-top: 5px;
 }
 
-/* --- SECTION 3: BOTTOM (ACTIONS) --- */
+/* --- SECTION 3: LIQUIDITY CONTROLS (ACTIONS) --- */
 
 .action-center {
-  padding: 15px 30px;
+  padding: 20px 25px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 12px;
+  gap: 15px;
+  border-top: 1px solid #eee;
 }
 
 .input-group {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
 }
 
@@ -178,62 +185,67 @@ body, html {
 
 .input-field {
   width: 100%;
-  padding: 12px;
-  border: 1.5px solid #e0e0e0;
-  border-radius: 8px;
+  padding: 14px;
+  background: var(--input-bg);
+  border: 1.5px solid transparent;
+  border-radius: 10px;
   font-size: 1rem;
-  font-weight: 600;
-  outline: none;
+  font-weight: 700;
+  color: var(--mapcap-green);
+  transition: var(--transition);
 }
 
 .input-field:focus {
   border-color: var(--mapcap-green);
+  background: white;
+}
+
+.input-unit {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .btn-mapcap {
   background-color: var(--mapcap-green);
   color: var(--mapcap-gold);
   border: none;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 0 20px;
+  border-radius: 10px;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   text-transform: uppercase;
-  min-width: 110px;
-  box-shadow: 0 4px 0 #0d3210; /* Depth effect */
-  transition: all 0.1s;
+  box-shadow: 0 4px 0 #0d280e;
+  transition: 0.1s;
 }
 
 .btn-mapcap:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 #0d3210;
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #0d280e;
 }
 
-/* --- UTILITIES & ANIMATIONS --- */
-
-.flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.loading-screen {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+/* --- ANIMATIONS --- */
 
 .animate-pulse {
-  animation: pulse 1.5s infinite ease-in-out;
+  animation: pulse 2s infinite ease-in-out;
 }
 
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(0.98); }
+  50% { opacity: 0.6; transform: scale(0.98); }
 }
 
-.text-center { text-align: center; }
+.whale-warning {
+  margin-top: 10px;
+  color: #d32f2f;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-align: center;
+  background: #ffebee;
+  padding: 4px;
+  border-radius: 4px;
+}
