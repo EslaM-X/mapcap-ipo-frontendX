@@ -1,59 +1,69 @@
 /**
- * MapCap IPO Statistics Panel
- * Based on Philip Jennings' Specification [Source: Page 4, 8]
- * Displays the 4 mandatory values for transparency and capital gain projection.
+ * MapCap IPO Statistics Panel (Enhanced with Context API)
+ * ---------------------------------------------------------
+ * Architect: Eslam Kora | Based on Philip Jennings' Specification
+ * Role: Real-time UI synchronization for Pioneer Metrics.
  */
 import React from 'react';
+import { useIpo } from '../context/IpoContext';
 
-const StatsPanel = ({ metrics }) => {
+const StatsPanel = () => {
+  // Pulling shared state from our custom Hook [Source: Requirements 73-75]
+  const { metrics, loading } = useIpo();
+
   /**
-   * Value 4: User's capital gain calculation.
-   * Specification: IPO pioneers pay 20% below LP value, resulting in a 20% 
-   * capital increase visualization [Source: Doc Page 1].
+   * Value 4: Capital Gain Calculation
+   * Logic: IPO entries are pegged at a 20% discount relative to LP value.
+   * Visualization shows the immediate equity gain for the Pioneer.
    */
-  const capitalGain = metrics.userPi * 1.20;
+  const capitalGain = (metrics.userPi || 0) * 1.20;
 
-  // Render a placeholder if data is still synchronizing with the Node.js engine
-  if (!metrics || metrics.totalPi === undefined) {
+  // Placeholder with branding animation during Pi SDK handshake
+  if (loading) {
     return (
-      <section className="stats-panel">
-        <h3 className="section-title">MapCap IPO Statistics:</h3>
-        <div className="stat-item calculating-text">Syncing with Pi Ledger...</div>
+      <section className="stats-panel flex-center">
+        <div className="animate-pulse" style={{color: 'var(--mapcap-green)'}}>
+          Auditing MapCap Ledger...
+        </div>
       </section>
     );
   }
 
   return (
     <section className="stats-panel">
-      {/* Official Section Title as per Page 8 layout */}
+      {/* Official Layout Heading [Source: Page 8] */}
       <h3 className="section-title">MapCap IPO Statistics:</h3>
       
       <div className="stats-list">
-        {/* Value 1: Unique Pioneer count [Source: Requirement 73] */}
+        {/* Value 1: Global Pioneer Participation */}
         <div className="stat-item">
-          • Total investors to date: <strong>{metrics.totalInvestors.toLocaleString()}</strong>
+          <span className="stat-label">• Total investors to date:</span>
+          <span className="stat-value">{(metrics.totalInvestors || 0).toLocaleString()}</span>
         </div>
 
-        {/* Value 2: Total Pi accumulated in the MapCapIPO escrow [Source: Requirement 74] */}
+        {/* Value 2: Total Liquidity in Escrow */}
         <div className="stat-item">
-          • Total pi invested to date: <strong>{metrics.totalPi.toLocaleString()} π</strong>
+          <span className="stat-label">• Total pi invested to date:</span>
+          <span className="stat-value">{(metrics.totalPi || 0).toLocaleString()} π</span>
         </div>
 
-        {/* Value 3: Specific contribution of the logged-in Pioneer [Source: Requirement 75] */}
+        {/* Value 3: Individual Pioneer Portfolio */}
         <div className="stat-item">
-          • Your pi invested to date: <strong>{metrics.userPi.toLocaleString()} π</strong>
+          <span className="stat-label">• Your pi invested to date:</span>
+          <span className="stat-value">{(metrics.userPi || 0).toLocaleString()} π</span>
         </div>
 
-        {/* Value 4: The 20% "Early Adopter" capital gain projection [Source: Requirement 10] */}
+        {/* Value 4: Alpha Gain (The 20% Early Adopter Benefit) */}
         <div className="stat-item highlight-gain">
-          • Your capital gain to date: <strong>{capitalGain.toLocaleString()} π</strong>
+          <span className="stat-label">• Your capital gain (+20%):</span>
+          <span className="stat-value">{capitalGain.toLocaleString()} π</span>
         </div>
       </div>
 
-      {/* Footer hint as implied by the Anti-Whale logic [Source: Page 5] */}
-      {metrics.userPi > (metrics.totalPi * 0.1) && (
-        <div className="whale-warning">
-          * Note: Investments exceeding 10% total are subject to refund.
+      {/* Anti-Whale Compliance Alert [Source: Page 5] */}
+      {metrics.userPi > (metrics.totalPi * 0.1) && metrics.totalPi > 0 && (
+        <div className="whale-warning animate-pulse">
+          ⚠️ Compliance: Contribution exceeds 10% total pool limit.
         </div>
       )}
     </section>
