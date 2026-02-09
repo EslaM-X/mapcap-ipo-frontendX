@@ -1,24 +1,23 @@
 /**
- * MapCap IPO Statistics Panel (Enhanced with Context API)
+ * MapCap IPO Statistics Panel (Final Specification Build)
  * ---------------------------------------------------------
- * Architect: Eslam Kora | Based on Philip Jennings' Specification
+ * Architect: Eslam Kora | Spec: Philip Jennings [Page 4, 8]
  * Role: Real-time UI synchronization for Pioneer Metrics.
  */
 import React from 'react';
 import { useIpo } from '../context/IpoContext';
 
 const StatsPanel = () => {
-  // Direct consumption of Global State [Source: Requirements 73-75]
+  [cite_start]// Consumption of Global State [cite: 73-75]
   const { metrics, loading } = useIpo();
 
   /**
-   * Value 4: Capital Gain Logic
-   * Official Spec: IPO Pioneers enter at a 20% discount vs future LP price.
-   * This calculation visualizes the immediate equity uplift.
+   * Value 4: Capital Gain Calculation
+   * [cite_start]Spec: This value is 20% greater than Value 3 (User's pi invested).[span_5](end_span)
    */
   const capitalGain = (metrics.userPi || 0) * 1.20;
 
-  // Professional loading state to ensure UI stability during SDK handshake
+  [span_6](start_span)// Placeholder while auditing the Pi Network Ledger[span_6](end_span)
   if (loading) {
     return (
       <section className="stats-panel flex-center">
@@ -31,39 +30,39 @@ const StatsPanel = () => {
 
   return (
     <section className="stats-panel">
-      {/* Visual Hierarchy: Section Heading per Page 8 of UX Doc */}
+      [span_7](start_span){/* Heading as per Page 8 visual layout[span_7](end_span) */}
       <h3 className="section-title">MapCap IPO Statistics:</h3>
       
       <div className="stats-list">
-        {/* Value 1: Verified Pioneer Count */}
+        [span_8](start_span){/* Value 1: Unique IPO pioneers count[span_8](end_span) */}
         <div className="stat-item">
-          <span className="stat-label">• Total investors to date:</span>
+          <span className="stat-label">• Total investors to date.</span>
           <span className="stat-value">{(metrics.totalInvestors || 0).toLocaleString()}</span>
         </div>
 
-        {/* Value 2: Total Escrowed Liquidity */}
+        [span_9](start_span){/* Value 2: Aggregate pi invested by all pioneers[span_9](end_span) */}
         <div className="stat-item">
-          <span className="stat-label">• Total pi invested:</span>
+          <span className="stat-label">• Total pi invested to date.</span>
           <span className="stat-value">{(metrics.totalPi || 0).toLocaleString()} π</span>
         </div>
 
-        {/* Value 3: Personalized Pioneer Contribution */}
+        [span_10](start_span){/* Value 3: Current user's specific pi balance[span_10](end_span) */}
         <div className="stat-item">
-          <span className="stat-label">• Your pi invested:</span>
+          <span className="stat-label">• Your pi invested to date.</span>
           <span className="stat-value">{(metrics.userPi || 0).toLocaleString()} π</span>
         </div>
 
-        {/* Value 4: The 'Alpha' Projection (The 20% Profit Visualizer) */}
+        [span_11](start_span)[span_12](start_span){/* Value 4: Capital gain projection (20% uplift)[span_11](end_span)[span_12](end_span) */}
         <div className="stat-item highlight-gain">
-          <span className="stat-label">• Your capital gain (+20%):</span>
+          <span className="stat-label">• Your capital gain to date.</span>
           <span className="stat-value">{capitalGain.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} π</span>
         </div>
       </div>
 
-      {/* Daniel's Audit Requirement: Anti-Whale Visibility [Source: Page 5] */}
+      [span_13](start_span)[span_14](start_span){/* Daniel's Anti-Whale Enforcement Visibility [cite: 90-91] */}
       {metrics.userPi > (metrics.totalPi * 0.1) && metrics.totalPi > 0 && (
         <div className="whale-warning animate-pulse">
-          ⚠️ Compliance: Investment exceeds 10% pool limit (Review Pending).
+          ⚠️ Compliance: Investment exceeds 10% limit. Excess will be refunded.
         </div>
       )}
     </section>
