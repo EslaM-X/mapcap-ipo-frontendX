@@ -1,23 +1,23 @@
 /**
  * MapCap IPO - Main Application Layout (Context-Enabled)
  * ---------------------------------------------------------
- * Architect: Eslam Kora | Visionaries: Philip Jennings & Daniel
- * Role: Structural Orchestrator for the Single-Screen Web3 UI.
- * * * DESIGN PRINCIPLE:
- * This component remains "Lean" by consuming state from IpoContext.
- * It enforces the 33.33% vertical split required by the specification.
+ * Architect: Eslam Kora | AppDev @Map-of-Pi
+ * Project: MapCap Ecosystem | Spec: Philip Jennings & Daniel
+ * * DESIGN PRINCIPLE:
+ * This component enforces the 33.33% vertical split while acting
+ * as the orchestrator for Pi SDK authentication and data hydration.
  */
 
 import React, { useEffect } from 'react';
 import './App.css';
 
-// Importing UI Components [Source: Page 8 - Screen Design]
+// Importing UI Components per Philip's Layout [Source: Page 8]
 import Navbar from './components/Navbar';
 import PriceGraph from './components/PriceGraph';
 import StatsPanel from './components/StatsPanel';
 import ActionButtons from './components/ActionButtons';
 
-// Importing the Global State Hook
+// Global State Management
 import { useIpo } from './context/IpoContext';
 import { PiService } from './services/pi.service';
 
@@ -32,41 +32,43 @@ function App() {
   } = useIpo();
 
   /**
-   * Lifecycle: Bootstrapping the MapCap Ecosystem within Pi Browser.
+   * Lifecycle: Bootstrapping the MapCap Ecosystem.
+   * Handles Pi SDK Handshake and initial data fetch.
    */
   useEffect(() => {
     const initializeApp = async () => {
       try {
         if (window.Pi) {
-          // Initialize Pi SDK (Sandbox mode for testing phase)
+          // Initialize Pi SDK (Set sandbox: false for Production Launch)
           window.Pi.init({ version: "2.0", sandbox: true });
           
-          // Authenticate Pioneer and establish the global session
+          // Step 1: Secure Pioneer Authentication
           const user = await PiService.authenticate();
           setCurrentUser(user);
           
-          // Sync data specifically for this Pioneer username
+          // Step 2: Hydrate Global State with Pioneer-specific Metrics
           await refreshData(user.username);
         }
       } catch (err) {
-        console.error("Critical Engine Failure: Auth or SDK initialization error", err);
+        console.error("Critical: SDK handshake failed or Pioneer rejected Auth.", err);
       } finally {
-        setLoading(false);
+        setLoading(false); // Transition out of loading state
       }
     };
 
     initializeApp();
-  }, []);
+  }, [setCurrentUser, refreshData, setLoading]);
 
   /**
-   * Loading State: Branded UX during Pi SDK handshake and Blockchain sync.
+   * LOADING SCREEN (U2A Branding)
+   * Enforced during the verification of the Pi Ledger and User Auth.
    */
   if (loading) {
     return (
       <div className="flex-center loading-screen" style={{height: '100vh', background: 'var(--mapcap-green)', color: 'var(--mapcap-gold)'}}>
         <div className="text-center animate-pulse">
-          <h2 style={{letterSpacing: '2px'}}>MAPCAP IPO</h2>
-          <p style={{fontSize: '0.9rem', marginTop: '10px'}}>Synchronizing Pi Ledger...</p>
+          <h2 style={{letterSpacing: '3px', fontWeight: '800'}}>MAPCAP IPO</h2>
+          <p style={{fontSize: '0.85rem', marginTop: '12px', opacity: '0.9'}}>Auditing Pi Network Ledger...</p>
         </div>
       </div>
     );
@@ -76,20 +78,21 @@ function App() {
     <div className="mapcap-root">
       
       {/* SECTION 1: TOP (33.33vh) - Branding & Market Visualization
-          Displays the dynamic growth graph based on IPO water-level logic. */}
+          Displays the PriceGraph fed by dailyPrices dataset. */}
+      
       <section className="section-top">
         <Navbar username={currentUser?.username} />
-        <PriceGraph dailyPrices={metrics.dailyPrices} />
+        <PriceGraph />
       </section>
 
-      {/* SECTION 2: MIDDLE (33.33vh) - Transparent Tokenomics Stats
-          Consumes real-time metrics for Value 1, 2, 3, and 4. */}
+      {/* SECTION 2: MIDDLE (33.33vh) - Transparency Ledger
+          Renders Value 1, 2, 3, and 4 (Capital Gain) metrics. */}
       <section className="section-middle">
         <StatsPanel />
       </section>
 
       {/* SECTION 3: BOTTOM (33.33vh) - Pioneer Liquidity Controls
-          Invest (U2A) and Withdraw (A2UaaS) action center. */}
+          The action hub for IPO participation (Invest/Withdraw). */}
       <section className="section-bottom">
         <ActionButtons />
       </section>
