@@ -30,12 +30,62 @@ body {
     justify-content: center;
 }
 
-/* Graph elements color (Page 3) */
-.chart-placeholder {
-    color: var(--pi-green);
+/* --- New Custom Chart Styles --- */
+.chart-container {
+    background: #ffffff;
     border: 1px solid var(--pi-green);
-    height: 100%;
+    border-radius: 10px;
+    padding: 15px;
+    height: 80%; /* Adjust within top-section */
+    display: flex;
+    flex-direction: column;
 }
+
+.chart-title {
+    color: var(--pi-green);
+    margin: 0 0 15px 0;
+    font-size: 14px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.chart-bars {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    flex-grow: 1;
+    padding-top: 20px;
+}
+
+.bar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 20%;
+}
+
+.bar {
+    width: 25px;
+    background-color: var(--pi-green);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transition: height 0.6s ease; /* Smooth animation when data updates */
+}
+
+.price-label {
+    position: absolute;
+    top: -20px;
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--pi-green);
+}
+
+.day-label {
+    margin-top: 8px;
+    font-size: 11px;
+    color: #888;
+}
+/* --- End of Chart Styles --- */
 
 /* Buttons: Rounded corners, Green background, Gold text (Page 4) */
 button {
@@ -49,10 +99,14 @@ button {
     margin: 5px;
 }
 
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 input {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
     width: 80px;
 }
-
