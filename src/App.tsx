@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import StatsBoard from './components/StatsBoard';
 import IpoChart from './components/IpoChart';
 import ActionButtons from './components/ActionButtons';
+import { piService } from './services/piService';
 import './App.css';
 
 /**
- * Main MVP Dashboard.
- * Syncs Graph, Stats, and Actions with Backend.
+ * MapCap IPO Dashboard - MVP.
+ * Focus: Simple, maintainable UI synced with Pi Blockchain backend.
  */
 const App: React.FC = () => {
     const [ipoData, setIpoData] = useState<any>({
@@ -15,22 +15,25 @@ const App: React.FC = () => {
         totalPiInvested: 0,
         userPiBalance: 0,
         spotPrice: 0,
-        history: [] // Added to support the graph
+        history: [] 
     });
 
-    const fetchIpoStatus = async () => {
+    /**
+     * Synchronizes local state with backend metrics.
+     */
+    const refreshData = async () => {
         try {
-            // Updated to ensure it hits your local backend
-            const response = await axios.get('http://localhost:3001/api/ipo/status');
-            setIpoData(response.data);
+            const data = await piService.getIpoStatus();
+            setIpoData(data);
         } catch (error) {
-            console.error("Sync failed:", error);
+            console.error("Dashboard sync failed");
         }
     };
 
+    // Auto-refresh ensures the user sees price movements during the Demo
     useEffect(() => {
-        fetchIpoStatus();
-        const interval = setInterval(fetchIpoStatus, 15000); // Shorter interval for better Demo feel
+        refreshData();
+        const interval = setInterval(refreshData, 15000); 
         return () => clearInterval(interval);
     }, []);
 
@@ -41,12 +44,12 @@ const App: React.FC = () => {
             </header>
 
             <main className="content">
-                {/* 1. Graph Section (Dynamic History) */}
+                {/* Visualizing price growth curve */}
                 <section className="top-section">
                     <IpoChart data={ipoData.history} />
                 </section>
 
-                {/* 2. Stats Section (Real-time Numbers) */}
+                {/* Core IPO Metrics - Real-time stats */}
                 <section className="middle-section">
                     <StatsBoard 
                         totalInvestors={ipoData.totalInvestors}
@@ -55,9 +58,9 @@ const App: React.FC = () => {
                     />
                 </section>
 
-                {/* 3. Actions Section (Invest/Withdraw) */}
+                {/* On-chain interactions: U2A Invest / A2U Withdraw */}
                 <section className="bottom-section">
-                    <ActionButtons onTransactionSuccess={fetchIpoStatus} />
+                    <ActionButtons onTransactionSuccess={refreshData} />
                 </section>
             </main>
         </div>
