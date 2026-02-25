@@ -1,44 +1,59 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3001/api/ipo';
+// Base URL pointing to our Node.js Backend on port 3001
+const API_BASE_URL = 'http://localhost:3001/api';
 
 /**
- * Pi Network SDK & Backend Sync.
- * Manages On-chain payments and real-time data fetching.
+ * Pi Network Service: Bridges Frontend with On-chain Logic.
+ * Simple, maintainable, and strictly typed.
  */
 export const piService = {
-    // 1. Test Function: Syncs Dashboard with Backend
+    /**
+     * Fetches current IPO metrics from Backend.
+     * Prevents NaN by returning default numeric values on failure.
+     */
     async getIpoStatus() {
         try {
             const response = await axios.get(`${API_BASE_URL}/status`);
             return response.data;
         } catch (error) {
-            console.error("Sync Error:", error);
-            throw error;
+            console.error("Dashboard sync failed. Check Port 3001.");
+            return {
+                totalInvestors: 0,
+                totalPiInvested: 0,
+                userPiBalance: 0,
+                spotPrice: 0.35,
+                history: []
+            };
         }
     },
 
-    // 2. Main Action: Handles U2A On-chain Investment
-    async initiateInvestment(amount: number) {
+    /**
+     * Executes On-chain U2A investment flow via Pi SDK.
+     */
+    async invest(amount: number) {
         try {
-            return await window.Pi.createPayment({
+            // Check if Pi SDK is available in the environment
+            if (!(window as any).Pi) throw new Error("Pi SDK not found");
+
+            return await (window as any).Pi.createPayment({
                 amount: amount,
                 memo: "MapCap IPO Investment",
                 metadata: { type: "U2A_IPO" }
             }, {
                 onReadyForServerApproval: async (paymentId: string) => {
-                    // Step 1: Backend approval & Spot Price update
+                    // Sync with backend to update spot price and metrics
                     await axios.post(`${API_BASE_URL}/invest`, { amount, paymentId });
                 },
                 onReadyForServerCompletion: (paymentId: string, txid: string) => {
                     console.log("On-chain Success. TxID:", txid);
                     window.location.reload(); 
                 },
-                onCancel: (paymentId: string) => { console.log("User cancelled"); },
-                onError: (error: any) => { console.error("SDK Error:", error.message); }
+                onCancel: (paymentId: string) => { console.log("Transaction cancelled"); },
+                onError: (error: any) => { console.error("Payment Error:", error.message); }
             });
         } catch (err) {
-            console.error("SDK Failed", err);
+            console.error("SDK Flow aborted", err);
         }
     }
 };
