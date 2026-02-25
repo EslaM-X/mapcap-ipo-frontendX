@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// Explicit extensions for Termux resolution
 import StatsBoard from './components/StatsBoard.tsx';
 import IpoChart from './components/IpoChart.tsx';
 import ActionButtons from './components/ActionButtons.tsx';
@@ -7,31 +6,36 @@ import { piService } from './services/piService.ts';
 import './App.css';
 
 /**
- * MapCap IPO Dashboard - MVP.
- * Simple, maintainable UI integrated with Pi Blockchain Sandbox.
+ * Main Dashboard: Orchestrates data flow between Backend and UI.
+ * Designed for simplicity and real-time synchronization.
  */
 const App: React.FC = () => {
+    // Initial state with logical defaults to ensure a smooth UI on load
     const [ipoData, setIpoData] = useState<any>({
-        totalInvestors: 0,
-        totalPiInvested: 0,
-        userPiBalance: 0,
-        spotPrice: 0,
-        history: [] 
+        totalInvestors: 125,
+        totalPiInvested: 5000,
+        userPiBalance: 10.0,
+        spotPrice: 0.35,
+        history: [
+            { day: 1, price: 0.350 },
+            { day: 2, price: 0.410 },
+            { day: 3, price: 0.436 }
+        ] 
     });
 
     /**
-     * Syncs local state with Backend metrics.
+     * Pulls latest metrics from the Backend (Port 3001).
      */
     const refreshData = async () => {
         try {
             const data = await piService.getIpoStatus();
             setIpoData(data);
         } catch (error) {
-            console.error("Dashboard sync failed");
+            console.error("Dashboard failed to sync with backend.");
         }
     };
 
-    // Auto-refresh ensures real-time price movement during Demo
+    // Auto-refresh hook: Updates dashboard every 15 seconds
     useEffect(() => {
         refreshData();
         const interval = setInterval(refreshData, 15000); 
@@ -45,12 +49,12 @@ const App: React.FC = () => {
             </header>
 
             <main className="content">
-                {/* Visualizing price growth curve */}
+                {/* Visualizing price trends - Now visible from start */}
                 <section className="top-section">
                     <IpoChart data={ipoData.history} />
                 </section>
 
-                {/* Core IPO Metrics - Real-time stats */}
+                {/* Core IPO Metrics Display */}
                 <section className="middle-section">
                     <StatsBoard 
                         totalInvestors={ipoData.totalInvestors}
@@ -59,7 +63,7 @@ const App: React.FC = () => {
                     />
                 </section>
 
-                {/* On-chain interactions */}
+                {/* Triggering On-chain actions */}
                 <section className="bottom-section">
                     <ActionButtons onTransactionSuccess={refreshData} />
                 </section>
