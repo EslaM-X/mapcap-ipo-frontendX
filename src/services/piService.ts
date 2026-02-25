@@ -3,55 +3,58 @@ import axios from 'axios';
 const API_BASE_URL = 'http://localhost:3001/api';
 
 /**
- * Pi Network Service: Core logic for on-chain payments and backend sync.
+ * Service handling Pi Network on-chain interactions and backend synchronization.
  */
 export const piService = {
     /**
-     * Fetches real-time IPO metrics. 
-     * Returns default values on failure to prevent UI crashes (NaN).
+     * Retrieves current IPO metrics and price history.
      */
     async getIpoStatus() {
         try {
             const response = await axios.get(`${API_BASE_URL}/status`);
             return response.data;
         } catch (error) {
-            console.error("Dashboard sync failed. Port 3001 unreachable.");
-            return {
-                totalInvestors: 0,
-                totalPiInvested: 0,
-                userPiBalance: 0,
-                spotPrice: 0.35,
-                history: []
-            };
+            console.error("Sync error: Backend unreachable.");
+            return { totalInvestors: 0, totalPiInvested: 0, userPiBalance: 0, spotPrice: 0.35, history: [] };
         }
     },
 
     /**
-     * Initiates U2A payment flow via Pi SDK.
-     * Updates backend state upon on-chain approval.
+     * Executes U2A payment flow through Pi SDK.
      */
     async invest(amount: number) {
         try {
-            if (!(window as any).Pi) throw new Error("Pi SDK missing");
+            if (!(window as any).Pi) throw new Error("Pi SDK not initialized");
 
             return await (window as any).Pi.createPayment({
                 amount,
                 memo: "MapCap IPO Investment",
-                metadata: { type: "U2A_IPO" }
+                metadata: { type: "U2A_INVEST" }
             }, {
                 onReadyForServerApproval: async (paymentId: string) => {
-                    // Sync backend with the approved transaction
                     await axios.post(`${API_BASE_URL}/invest`, { amount, paymentId });
                 },
                 onReadyForServerCompletion: (paymentId: string, txid: string) => {
-                    console.log("Payment successful. TxID:", txid);
                     window.location.reload(); 
                 },
-                onCancel: (paymentId: string) => console.log("User cancelled payment"),
-                onError: (error: any) => console.error("SDK Payment Error:", error.message)
+                onCancel: () => console.log("User cancelled"),
+                onError: (err: any) => console.error("SDK Error:", err.message)
             });
         } catch (err) {
-            console.error("Investment flow failed", err);
+            console.error("Investment failed", err);
+        }
+    },
+
+    /**
+     * Initiates A2U withdrawal request.
+     */
+    async withdraw(amount: number) {
+        try {
+            const response = await axios.post(`${API_BASE_URL}/withdraw`, { amount });
+            return response.data;
+        } catch (err) {
+            console.error("Withdrawal failed", err);
+            throw err;
         }
     }
 };
