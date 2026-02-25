@@ -1,34 +1,41 @@
 import React, { useState } from 'react';
 import { piService } from '../services/piService.ts';
 
-interface ActionButtonsProps {
+interface ActionProps {
     onTransactionSuccess: () => void;
 }
 
 /**
- * UI Controls for IPO actions.
- * Directly triggers on-chain investment via Pi SDK.
+ * Dashboard controls for investing and withdrawing Pi.
  */
-const ActionButtons: React.FC<ActionButtonsProps> = ({ onTransactionSuccess }) => {
+const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
     const [amount, setAmount] = useState<number>(1.0);
-    const [isProcessing, setIsProcessing] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    /**
-     * Executes investment and triggers dashboard refresh on success.
-     */
     const handleInvest = async () => {
         if (amount <= 0) return alert("Enter a valid amount");
-
-        setIsProcessing(true);
+        setLoading(true);
         try {
             await piService.invest(amount);
-            onTransactionSuccess(); // Refresh charts and stats
-            alert(`Success! Invested ${amount} Pi.`);
-        } catch (error) {
-            console.error("On-chain action failed", error);
-            alert("Transaction error. See console for details.");
+            onTransactionSuccess();
+        } catch (err) {
+            alert("Investment error");
         } finally {
-            setIsProcessing(false);
+            setLoading(false);
+        }
+    };
+
+    const handleWithdraw = async () => {
+        if (amount <= 0) return alert("Enter amount to withdraw");
+        setLoading(true);
+        try {
+            await piService.withdraw(amount);
+            onTransactionSuccess();
+            alert(`Success! Requested ${amount} Pi withdrawal.`);
+        } catch (err) {
+            alert("Withdrawal failed. Check balance.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -37,21 +44,16 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ onTransactionSuccess }) =
             <input 
                 type="number" 
                 value={amount} 
-                step="0.1"
-                min="0.1"
                 onChange={(e) => setAmount(Number(e.target.value))} 
-                disabled={isProcessing}
+                disabled={loading}
             />
             
-            <button 
-                onClick={handleInvest} 
-                disabled={isProcessing}
-            >
-                {isProcessing ? "Processing..." : "Invest Pi"}
+            <button onClick={handleInvest} disabled={loading}>
+                {loading ? "..." : "Invest Pi"}
             </button>
             
-            <button className="btn-withdraw" disabled={true}>
-                Withdraw (Locked)
+            <button className="btn-withdraw" onClick={handleWithdraw} disabled={loading}>
+                Withdraw Pi
             </button>
         </div>
     );
