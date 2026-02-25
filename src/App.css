@@ -1,0 +1,58 @@
+/* Styling based on Section 3: Screen layout & Colors */
+
+:root {
+    --pi-green: #2e7d32; /* The standard green bar color */
+    --pi-gold: #ffd700;  /* The gold font for titles/icons */
+    --pi-white: #ffffff; /* Plain white background */
+}
+
+body {
+    background-color: var(--pi-white);
+    margin: 0;
+    font-family: sans-serif;
+}
+
+/* Navbar: Green bar, full width, gold text (Page 3) */
+.navbar {
+    background-color: var(--pi-green);
+    color: var(--pi-gold);
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+}
+
+/* Sections: Equal height distribution (Page 3) */
+.top-section, .middle-section, .bottom-section {
+    height: 33.3vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Graph elements color (Page 3) */
+.chart-placeholder {
+    color: var(--pi-green);
+    border: 1px solid var(--pi-green);
+    height: 100%;
+}
+
+/* Buttons: Rounded corners, Green background, Gold text (Page 4) */
+button {
+    background-color: var(--pi-green);
+    color: var(--pi-gold);
+    border-radius: 8px;
+    padding: 12px 24px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 5px;
+}
+
+input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 80px;
+}
+
