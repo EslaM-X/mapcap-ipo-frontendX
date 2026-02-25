@@ -1,24 +1,36 @@
 import React from 'react';
-import { MapCapData } from '../types/ipo';
+
+interface StatsProps {
+    totalInvestors: number;
+    totalPiInvested: number;
+    userPiBalance: number;
+    spotPrice: number;
+}
 
 /**
- * Dashboard stats component.
- * Displays aggregate IPO data and user-specific balance.
+ * Displays IPO metrics with simple, readable lists.
  */
-const StatsBoard: React.FC<MapCapData> = ({ totalInvestors, totalPiInvested, userPiBalance, spotPrice }) => {
+const StatsBoard: React.FC<StatsProps> = ({ totalInvestors, totalPiInvested, userPiBalance, spotPrice }) => {
+    // Safe calculation to prevent NaN during initial load
+    const balance = userPiBalance || 0;
+    const currentPrice = spotPrice || 0.35;
+    const initialPrice = 0.35;
+    
+    const capitalGain = balance > 0 
+        ? ((currentPrice - initialPrice) / initialPrice * 100).toFixed(2)
+        : "0.00";
+
     return (
         <div className="stats-container">
-            <h3>MapCap IPO Statistics:</h3>
-            <ul>
-                <li>Total investors to date: {totalInvestors}</li>
-                <li>Total pi invested to date: {totalPiInvested} π</li>
-                <li>Your pi invested to date: {userPiBalance} π</li>
-                {/* 20% capital gain as per Section 3 of Use Case */}
-                <li>Your capital gain to date: {(userPiBalance * 1.2).toFixed(2)} π</li>
+            <h3 style={{ color: '#2e7d32', fontSize: '16px' }}>IPO Metrics:</h3>
+            <ul style={{ listStyle: 'none', padding: 0 }}>
+                <li>👥 Investors: <b>{totalInvestors || 0}</b></li>
+                <li>💰 Total Invested: <b>{totalPiInvested || 0} π</b></li>
+                <li>👤 Your Investment: <b>{balance} π</b></li>
+                <li>📈 Est. Capital Gain: <b style={{ color: '#2e7d32' }}>+{capitalGain}%</b></li>
             </ul>
         </div>
     );
 };
 
 export default StatsBoard;
-
