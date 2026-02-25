@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import StatsBoard from './components/StatsBoard';
-import IpoChart from './components/IpoChart';
-import ActionButtons from './components/ActionButtons';
-import { piService } from './services/piService';
+// Explicit extensions for Termux resolution
+import StatsBoard from './components/StatsBoard.tsx';
+import IpoChart from './components/IpoChart.tsx';
+import ActionButtons from './components/ActionButtons.tsx';
+import { piService } from './services/piService.ts';
 import './App.css';
 
 /**
  * MapCap IPO Dashboard - MVP.
- * Focus: Simple, maintainable UI synced with Pi Blockchain backend.
+ * Simple, maintainable UI integrated with Pi Blockchain Sandbox.
  */
 const App: React.FC = () => {
     const [ipoData, setIpoData] = useState<any>({
@@ -19,7 +20,7 @@ const App: React.FC = () => {
     });
 
     /**
-     * Synchronizes local state with backend metrics.
+     * Syncs local state with Backend metrics.
      */
     const refreshData = async () => {
         try {
@@ -30,7 +31,7 @@ const App: React.FC = () => {
         }
     };
 
-    // Auto-refresh ensures the user sees price movements during the Demo
+    // Auto-refresh ensures real-time price movement during Demo
     useEffect(() => {
         refreshData();
         const interval = setInterval(refreshData, 15000); 
@@ -58,7 +59,7 @@ const App: React.FC = () => {
                     />
                 </section>
 
-                {/* On-chain interactions: U2A Invest / A2U Withdraw */}
+                {/* On-chain interactions */}
                 <section className="bottom-section">
                     <ActionButtons onTransactionSuccess={refreshData} />
                 </section>
