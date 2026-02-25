@@ -1,37 +1,32 @@
 import React, { useState } from 'react';
 import { piService } from '../services/piService.ts';
 
-/**
- * Interface for ActionButtons props.
- * Allows parent component to trigger data refresh on success.
- */
 interface ActionButtonsProps {
     onTransactionSuccess: () => void;
 }
 
 /**
- * Handles IPO investments. 
- * Bridges UI interaction with Pi Network on-chain logic.
+ * UI Controls for IPO actions.
+ * Directly triggers on-chain investment via Pi SDK.
  */
 const ActionButtons: React.FC<ActionButtonsProps> = ({ onTransactionSuccess }) => {
     const [amount, setAmount] = useState<number>(1.0);
     const [isProcessing, setIsProcessing] = useState(false);
 
+    /**
+     * Executes investment and triggers dashboard refresh on success.
+     */
     const handleInvest = async () => {
         if (amount <= 0) return alert("Enter a valid amount");
 
         setIsProcessing(true);
         try {
-            // Step 1: Execute on-chain payment via service
             await piService.invest(amount);
-            
-            // Step 2: Notify parent to refresh Dashboard (Charts/Stats)
-            onTransactionSuccess();
-            
+            onTransactionSuccess(); // Refresh charts and stats
             alert(`Success! Invested ${amount} Pi.`);
         } catch (error) {
-            console.error("On-chain flow failed", error);
-            alert("Transaction failed. Check console.");
+            console.error("On-chain action failed", error);
+            alert("Transaction error. See console for details.");
         } finally {
             setIsProcessing(false);
         }
@@ -56,7 +51,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ onTransactionSuccess }) =
             </button>
             
             <button className="btn-withdraw" disabled={true}>
-                Withdraw (Soon)
+                Withdraw (Locked)
             </button>
         </div>
     );
