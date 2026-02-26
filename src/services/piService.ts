@@ -3,12 +3,12 @@ import axios from 'axios';
 const API_BASE_URL = 'http://localhost:3001/api';
 
 /**
- * Service handling Pi Network on-chain interactions and backend synchronization.
+ * Service orchestrating Pi Network on-chain payments and backend synchronization.
+ * Designed for simplicity and maintainability.
  */
 export const piService = {
-    /**
-     * Retrieves current IPO metrics and price history.
-     */
+    
+    // Fetches real-time IPO metrics and price history for the dashboard
     async getIpoStatus() {
         try {
             const response = await axios.get(`${API_BASE_URL}/status`);
@@ -19,9 +19,7 @@ export const piService = {
         }
     },
 
-    /**
-     * Executes U2A payment flow through Pi SDK.
-     */
+    // Handles the U2A payment flow using Pi SDK
     async invest(amount: number) {
         try {
             if (!(window as any).Pi) throw new Error("Pi SDK not initialized");
@@ -31,29 +29,29 @@ export const piService = {
                 memo: "MapCap IPO Investment",
                 metadata: { type: "U2A_INVEST" }
             }, {
+                // Syncs on-chain payment with backend for server-side approval
                 onReadyForServerApproval: async (paymentId: string) => {
                     await axios.post(`${API_BASE_URL}/invest`, { amount, paymentId });
                 },
-                onReadyForServerCompletion: (paymentId: string, txid: string) => {
-                    window.location.reload(); 
+                onReadyForServerCompletion: async (paymentId: string, txid: string) => {
+                    console.log("Payment confirmed on-chain:", txid);
                 },
-                onCancel: () => console.log("User cancelled"),
-                onError: (err: any) => console.error("SDK Error:", err.message)
+                onCancel: () => console.log("User cancelled payment"),
+                onError: (err: any) => console.error("Pi SDK Error:", err.message)
             });
         } catch (err) {
-            console.error("Investment failed", err);
+            console.error("Investment logic failed", err);
+            throw err;
         }
     },
 
-    /**
-     * Initiates A2U withdrawal request.
-     */
+    // Requests A2U withdrawal through backend relay
     async withdraw(amount: number) {
         try {
             const response = await axios.post(`${API_BASE_URL}/withdraw`, { amount });
             return response.data;
         } catch (err) {
-            console.error("Withdrawal failed", err);
+            console.error("Withdrawal service error", err);
             throw err;
         }
     }
