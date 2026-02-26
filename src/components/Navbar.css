@@ -1,3 +1,4 @@
+/* Main Navigation Item Styles - Based on Map of Pi Official Code */
 .nav-item {
   width: 35px;
   height: 35px;
@@ -8,14 +9,47 @@
   justify-content: center;
   align-items: center;
   transition: all 0.2s ease;
+  outline: none; /* Human-logic: prevents focus rings on mobile */
 }
 
+/* Interaction: Active state for touch feedback */
 .nav-item:active {
+  width: 35px;
+  height: 35px;
+  border: none;
   border-radius: 50%;
   background-color: #d0d0d086;
 }
 
+/* State: Disabled for static icons (like the central Pi symbol) */
 .nav-item.disabled {
   cursor: default;
+  pointer-events: none; /* Ensures no interaction on reserved items */
 }
 
+/* Navbar Layout Fixes - Resolves overlapping issues from images */
+nav {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box; /* Critical for Termux/Mobile viewport stability */
+}
+
+/* Ensure SVG icons within nav-items match brand colors */
+.nav-item svg {
+  transition: transform 0.2s ease;
+}
+
+.nav-item:hover svg {
+  transform: scale(1.05); /* Subtle professional feedback for Demo */
+}
+
+/* Notification pulse animation for the menu icon */
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
