@@ -1,7 +1,34 @@
-/* Main Navigation Item Styles - Based on Map of Pi Official Code */
+/* Container: Fixed Navigation at the top with correct brand color */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: #007a33; /* Map of Pi Dark Green */
+  display: flex;
+  flex-direction: column; /* Vertical stack: Title on top, Icons below */
+  align-items: center;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+}
+
+/* Horizontal Row for Icons: The fix for horizontal alignment */
+.nav-icons-row {
+  display: flex;
+  flex-direction: row; /* Force horizontal layout */
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  padding: 5px 15px 10px 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Base Navigation Item Styles */
 .nav-item {
-  width: 35px;
-  height: 35px;
+  width: 40px;
+  height: 40px;
   border: none;
   background-color: transparent;
   cursor: pointer;
@@ -9,42 +36,53 @@
   justify-content: center;
   align-items: center;
   transition: all 0.2s ease;
-  outline: none; /* Human-logic: prevents focus rings on mobile */
+  outline: none;
+  color: #ffd700; /* Map of Pi Gold */
 }
 
-/* Interaction: Active state for touch feedback */
-.nav-item:active {
-  width: 35px;
-  height: 35px;
-  border: none;
-  border-radius: 50%;
-  background-color: #d0d0d086;
-}
-
-/* State: Disabled for static icons (like the central Pi symbol) */
-.nav-item.disabled {
-  cursor: default;
-  pointer-events: none; /* Ensures no interaction on reserved items */
-}
-
-/* Navbar Layout Fixes - Resolves overlapping issues from images */
-nav {
+/* Central Pi Icon Pin Style - Matches 1000303277.png */
+.pi-pin {
+  background-color: #004d20;
+  border: 2px solid #ffd700;
+  border-radius: 50% 50% 50% 5%;
+  transform: rotate(-45deg);
+  width: 38px;
+  height: 38px;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-sizing: border-box; /* Critical for Termux/Mobile viewport stability */
+  align-items: center;
+  justify-content: center;
+  margin-top: -5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* Ensure SVG icons within nav-items match brand colors */
+.pi-pin span {
+  transform: rotate(45deg);
+  color: #ffd700;
+  font-weight: 900;
+  font-size: 20px;
+}
+
+/* Interaction: Feedback on touch/click */
+.nav-item:active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+/* Ensure SVG icons scale properly */
 .nav-item svg {
+  width: 24px;
+  height: 24px;
+  stroke: #ffd700;
   transition: transform 0.2s ease;
 }
 
-.nav-item:hover svg {
-  transform: scale(1.05); /* Subtle professional feedback for Demo */
+.nav-item.disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
 }
 
-/* Notification pulse animation for the menu icon */
+/* Pulse animation for notifications (if needed) */
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
