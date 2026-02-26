@@ -8,26 +8,32 @@ interface StatsProps {
 }
 
 /**
- * Displays IPO metrics with simple, readable lists.
+ * Renders IPO metrics in a clean, card-based layout.
+ * Optimized for real-time reactivity during Invest/Withdraw actions.
  */
-const StatsBoard: React.FC<StatsProps> = ({ totalInvestors, totalPiInvested, userPiBalance, spotPrice }) => {
-    // Safe calculation to prevent NaN during initial load
-    const balance = userPiBalance || 0;
-    const currentPrice = spotPrice || 0.35;
-    const initialPrice = 0.35;
+const StatsBoard: React.FC<StatsProps> = ({ 
+    totalInvestors, 
+    totalPiInvested, 
+    userPiBalance, 
+    spotPrice 
+}) => {
     
-    const capitalGain = balance > 0 
+    // Core logic for gains based on spot price movement
+    const initialPrice = 0.35;
+    const currentPrice = spotPrice || initialPrice;
+    
+    const capitalGain = userPiBalance > 0 
         ? ((currentPrice - initialPrice) / initialPrice * 100).toFixed(2)
         : "0.00";
 
     return (
-        <div className="stats-container">
-            <h3 style={{ color: '#2e7d32', fontSize: '16px' }}>IPO Metrics:</h3>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-                <li>👥 Investors: <b>{totalInvestors || 0}</b></li>
-                <li>💰 Total Invested: <b>{totalPiInvested || 0} π</b></li>
-                <li>👤 Your Investment: <b>{balance} π</b></li>
-                <li>📈 Est. Capital Gain: <b style={{ color: '#2e7d32' }}>+{capitalGain}%</b></li>
+        <div className="stats-card">
+            <h3 className="stats-header">MapCap IPO Statistics:</h3>
+            <ul className="stats-list">
+                <li>Total investors to date: <b>{totalInvestors.toLocaleString()}</b></li>
+                <li>Total pi invested to date: <b>{totalPiInvested.toLocaleString()} π</b></li>
+                <li>Your pi invested to date: <b>{userPiBalance.toLocaleString()} π</b></li>
+                <li>Your capital gain to date: <span className="gain-text">+{capitalGain}%</span></li>
             </ul>
         </div>
     );
