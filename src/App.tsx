@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar.tsx';
 import StatsBoard from './components/StatsBoard.tsx';
