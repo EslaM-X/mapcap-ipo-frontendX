@@ -3,38 +3,47 @@ import React from 'react';
 interface StatsProps {
     totalInvestors: number;
     totalPiInvested: number;
-    userPiBalance: number;
-    spotPrice: number;
+    userPiInvested: number;
+    capitalGain: number;
 }
 
 /**
- * Enhanced StatsBoard with Null-safety.
- * Prevents white screen by providing default values during initial fetch.
+ * MapCap IPO Stats Board
+ * Spec: Philip Jennings [Page 8]
+ * Displays real-time investment metrics with 20% discount logic.
  */
 const StatsBoard: React.FC<StatsProps> = ({ 
     totalInvestors = 0, 
     totalPiInvested = 0, 
-    userPiBalance = 0, 
-    spotPrice = 0.35 
+    userPiInvested = 0, 
+    capitalGain = 0 
 }) => {
     
-    // Fallback logic to ensure numbers never break the UI
-    const initialPrice = 0.35;
-    const currentPrice = spotPrice || initialPrice;
-    const safeBalance = userPiBalance || 0;
-    
-    const capitalGain = safeBalance > 0 
-        ? ((currentPrice - initialPrice) / initialPrice * 100).toFixed(2)
-        : "0.00";
+    // Formatting helper for cleaner UI logic
+    const formatPi = (value: number) => value.toLocaleString(undefined, { minimumFractionDigits: 2 });
 
     return (
-        <div className="stats-card">
-            <h3 className="stats-header">MapCap IPO Statistics:</h3>
-            <ul className="stats-list">
-                <li>Total investors to date: <b>{(totalInvestors || 0).toLocaleString()}</b></li>
-                <li>Total pi invested to date: <b>{(totalPiInvested || 0).toLocaleString()} π</b></li>
-                <li>Your pi invested to date: <b>{safeBalance.toLocaleString()} π</b></li>
-                <li>Your capital gain to date: <span className="gain-text">+{capitalGain}%</span></li>
+        <div className="space-y-3">
+            <ul className="space-y-4 text-[#333] text-sm md:text-base">
+                <li className="flex justify-between items-center border-b border-gray-50 pb-2">
+                    <span>Total investors to date:</span>
+                    <span className="font-bold text-gray-800">{totalInvestors.toLocaleString()}</span>
+                </li>
+                
+                <li className="flex justify-between items-center border-b border-gray-50 pb-2">
+                    <span>Total pi invested to date:</span>
+                    <span className="font-bold text-gray-800">{formatPi(totalPiInvested)} π</span>
+                </li>
+
+                <li className="flex justify-between items-center border-b border-gray-50 pb-2">
+                    <span>Your pi invested to date:</span>
+                    <span className="font-bold text-gray-800">{formatPi(userPiInvested)} π</span>
+                </li>
+
+                <li className="flex justify-between items-center">
+                    <span>Your capital gain to date:</span>
+                    <span className="font-bold text-[#007a33]">+{formatPi(capitalGain)} π</span>
+                </li>
             </ul>
         </div>
     );
