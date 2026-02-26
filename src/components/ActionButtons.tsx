@@ -5,10 +5,15 @@ interface ActionProps {
     onTransactionSuccess: () => void;
 }
 
+/**
+ * Handles IPO participation via Pi SDK payments.
+ * Synchronizes on-chain actions with local dashboard metrics.
+ */
 const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
     const [amount, setAmount] = useState<string>("1");
     const [loading, setLoading] = useState(false);
 
+    // Triggers Pi Network U2A payment flow
     const handleInvest = async () => {
         const val = parseFloat(amount);
         if (isNaN(val) || val <= 0) return alert("Enter a valid amount");
@@ -16,27 +21,29 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
         setLoading(true);
         try {
             await piService.invest(val);
-            // انتظر ثانية واحدة لضمان تحديث البيانات في الباك إند
+            
+            // Brief delay ensures backend processes the on-chain callback before UI refresh
             setTimeout(async () => {
                 await onTransactionSuccess(); 
-                alert(`Success! Invested ${val} π`);
+                alert(`Successfully invested ${val} π`);
             }, 1000);
         } catch (err) {
-            alert("Investment failed");
+            alert("Transaction failed or cancelled");
         } finally {
             setLoading(false);
         }
     };
 
+    // Requests A2U withdrawal back to user wallet
     const handleWithdraw = async () => {
         const val = parseFloat(amount);
-        if (isNaN(val) || val <= 0) return alert("Enter amount to withdraw");
+        if (isNaN(val) || val <= 0) return alert("Enter a valid withdrawal amount");
 
         setLoading(true);
         try {
             await piService.withdraw(val);
             await onTransactionSuccess(); 
-            alert(`Success! Requested ${val} Pi withdrawal.`);
+            alert(`Withdrawal request for ${val} π submitted`);
         } catch (err) {
             alert("Withdrawal failed");
         } finally {
@@ -54,7 +61,7 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
                 disabled={loading}
             />
             <button onClick={handleInvest} disabled={loading}>
-                {loading ? "..." : "Invest Pi"}
+                {loading ? "Processing..." : "Invest Pi"}
             </button>
             <button className="btn-withdraw" onClick={handleWithdraw} disabled={loading}>
                 Withdraw Pi
