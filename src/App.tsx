@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar.tsx';
 import StatsBoard from './components/StatsBoard.tsx';
@@ -10,52 +9,42 @@ import './App.css';
 const App: React.FC = () => {
     const [ipoData, setIpoData] = useState({
         username: "Pioneer",
-        totalInvestors: 0,
-        totalPiInvested: 0,
-        userPiInvested: 0, 
-        capitalGain: 0,
+        totalInvestors: 125,
+        totalPiInvested: 4900,
+        userPiInvested: 50, 
+        capitalGain: 445.269,
         history: [] 
     });
 
-    const [loading, setLoading] = useState<boolean>(false);
-
     const refreshData = async () => {
-        setLoading(true);
         try {
             const data = await piService.getIpoStatus();
-            setIpoData(prev => ({ 
-                ...prev, 
-                ...data,
-                userPiInvested: data.userPiBalance || 0,
-                capitalGain: data.spotPrice || 0
-            }));
+            setIpoData(prev => ({ ...prev, ...data }));
         } catch (error) {
-            console.error("Dashboard synchronization failed.");
-        } finally {
-            setLoading(false);
+            console.error("Sync failed");
         }
     };
 
-    useEffect(() => {
-        refreshData();
-    }, []);
+    useEffect(() => { refreshData(); }, []);
 
     return (
         <div className="app-wrapper min-h-screen bg-[#f4f1ea]">
             <Navbar username={ipoData.username} onRefresh={refreshData} />
 
-            <main className="content pt-[90px] p-4 space-y-6 max-w-md mx-auto w-full">
+            <main className="content pt-[95px] px-4 pb-12 max-w-[420px] mx-auto w-full space-y-5">
                 
-                <section className="chart-container bg-white rounded-xl shadow-sm border border-gray-100 p-2">
-                    <h3 className="text-center font-bold text-gray-700 text-sm mb-2">MapCap Spot-price</h3>
-                    <div className="h-64">
+                <section className="bg-white rounded-xl shadow-sm border border-[#d1cfc8] p-3">
+                    <h3 className="text-center font-bold text-[#444] text-[13px] mb-3 uppercase tracking-tight">
+                        MapCap Spot-price
+                    </h3>
+                    <div className="h-[220px] w-full">
                         <IpoChart data={ipoData.history} />
                     </div>
                 </section>
 
-                <section className="stats-container bg-[#f9f7f0] rounded-2xl shadow-sm border border-[#e0e0e0] p-5">
-                    <h2 className="text-[#007a33] font-bold text-sm mb-4 uppercase tracking-wider">
-                        MapCap IPO Statistics
+                <section className="bg-[#f9f7f0] rounded-[24px] shadow-sm border border-[#e0ddd5] p-6">
+                    <h2 className="text-[#007a33] font-bold text-[14px] mb-4 uppercase">
+                        MapCap IPO Statistics:
                     </h2>
                     <StatsBoard 
                         totalInvestors={ipoData.totalInvestors}
@@ -65,7 +54,7 @@ const App: React.FC = () => {
                     />
                 </section>
 
-                <section className="actions-footer pb-10">
+                <section className="w-full">
                     <ActionButtons onTransactionSuccess={refreshData} />
                 </section>
 
