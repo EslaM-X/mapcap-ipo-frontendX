@@ -8,63 +8,57 @@ interface StatsProps {
 }
 
 const StatsBoard: React.FC<StatsProps> = ({ 
-    totalInvestors = 0, 
-    totalPiInvested = 0, 
-    userPiInvested = 0, 
-    capitalGain = 0 
+    totalInvestors = 125, 
+    totalPiInvested = 4850.00, 
+    userPiInvested = 50.00, 
+    capitalGain = 445.269 
 }) => {
     
-    // Formatting helper to match the clean numeric style in the reference image
-    const formatPi = (value: number) => value.toLocaleString(undefined, { 
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 3 
-    });
+    // تنسيق الأرقام لتطابق الصورة المرجعية (3 أرقام عشرية للربح)
+    const formatValue = (value: number, decimals: number = 2) => 
+        value.toLocaleString(undefined, { 
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals 
+        });
 
     return (
-        <div className="w-full">
-            {/* Using a clean list with specific colors from Map of Pi Palette */}
-            <ul className="space-y-3">
+        <div className="w-full px-4 py-3 bg-[#f4f1ea]">
+            {/* الحاوية الرئيسية: حواف دائرية كبيرة، خلفية فاتحة، وإطار رمادي نحيف جداً */}
+            <div className="w-full bg-[#f4f1ea] border-[1px] border-[#d1d5db] rounded-[30px] p-6 shadow-sm">
                 
-                {/* Metric Item: Total Investors */}
-                <li className="flex justify-between items-center border-b border-[#e5e7eb] pb-2">
-                    <span className="text-gray-600 text-[13px] font-medium leading-relaxed">
-                        Total investors to date:
-                    </span>
-                    <span className="font-bold text-gray-900 text-[14px]">
-                        {totalInvestors.toLocaleString()}
-                    </span>
-                </li>
-                
-                {/* Metric Item: Total Pi Invested */}
-                <li className="flex justify-between items-center border-b border-[#e5e7eb] pb-2">
-                    <span className="text-gray-600 text-[13px] font-medium leading-relaxed">
-                        Total pi invested to date:
-                    </span>
-                    <span className="font-bold text-gray-900 text-[14px]">
-                        {formatPi(totalPiInvested)} <span className="text-[12px] font-normal">π</span>
-                    </span>
-                </li>
+                {/* العنوان: مطابق للخط والحجم في الصورة */}
+                <h3 className="text-black text-[17px] font-sans font-medium mb-4">
+                    MapCap IPO Statistics:
+                </h3>
 
-                {/* Metric Item: User's Personal Investment (On-chain Sync) */}
-                <li className="flex justify-between items-center border-b border-[#e5e7eb] pb-2">
-                    <span className="text-gray-600 text-[13px] font-medium leading-relaxed">
-                        Your pi invested to date:
-                    </span>
-                    <span className="font-bold text-gray-900 text-[14px]">
-                        {formatPi(userPiInvested)} <span className="text-[12px] font-normal">π</span>
-                    </span>
-                </li>
+                {/* قائمة الإحصائيات بالنقاط السوداء (Bullets) */}
+                <ul className="space-y-2.5">
+                    
+                    {/* Item 1: Total Investors */}
+                    <li className="flex items-start text-black text-[15px] font-sans">
+                        <span className="mr-3 text-[20px] leading-none mt-[-2px]">•</span>
+                        <span>Total investors to date: {totalInvestors}</span>
+                    </li>
+                    
+                    {/* Item 2: Total Pi Invested */}
+                    <li className="flex items-start text-black text-[15px] font-sans">
+                        <span className="mr-3 text-[20px] leading-none mt-[-2px]">•</span>
+                        <span>Total pi invested to date: {formatValue(totalPiInvested)} π</span>
+                    </li>
 
-                {/* Metric Item: Capital Gain (Highlighted in Pi Green) */}
-                <li className="flex justify-between items-center pt-1">
-                    <span className="text-gray-600 text-[13px] font-medium leading-relaxed">
-                        Your capital gain to date:
-                    </span>
-                    <span className="font-bold text-[#2e7d32] text-[14px]">
-                        +{formatPi(capitalGain)} <span className="text-[12px] font-normal">π</span>
-                    </span>
-                </li>
-            </ul>
+                    {/* Item 3: User Investment */}
+                    <li className="flex items-start text-black text-[15px] font-sans">
+                        <span className="mr-3 text-[20px] leading-none mt-[-2px]">•</span>
+                        <span>Your pi invested to date: {formatValue(userPiInvested)} π</span>
+                    </li>
+
+                    {/* Item 4: Capital Gain */}
+                    <li className="flex items-start text-black text-[15px] font-sans">
+                        <span className="mr-3 text-[20px] leading-none mt-[-2px]">•</span>
+                        <span>Your capital gain to date: +{formatValue(capitalGain, 3)} π</span>
+                    </li>
+                </ul>
+            </div>
         </div>
     );
 };
