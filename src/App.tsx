@@ -6,14 +6,9 @@ import ActionButtons from './components/ActionButtons';
 import { piService } from './services/piService';
 import './App.css';
 
-/**
- * Main MapCapIPO Application Container
- * Aligned with Philip Jennings' Spec [Page 8]
- */
 const App: React.FC = () => {
-    // Standardizing state according to Use Case requirements
     const [ipoData, setIpoData] = useState({
-        username: "Pioneer", // Placeholder for Pi SDK Auth
+        username: "Pioneer",
         totalInvestors: 0,
         totalPiInvested: 0,
         userPiInvested: 0, 
@@ -23,17 +18,14 @@ const App: React.FC = () => {
 
     const [loading, setLoading] = useState<boolean>(false);
 
-    /**
-     * Logic: Blockchain Sync
-     * Fetches real-time IPO metrics from the Backend/On-chain
-     */
+    // Sync UI with On-chain data from Backend
     const refreshData = async () => {
         setLoading(true);
         try {
             const data = await piService.getIpoStatus();
             setIpoData(prev => ({ ...prev, ...data }));
         } catch (error) {
-            console.error("Dashboard sync error:", error);
+            console.error("Sync failed: Check backend connectivity");
         } finally {
             setLoading(false);
         }
@@ -45,21 +37,19 @@ const App: React.FC = () => {
 
     return (
         <div className="flex flex-col min-h-screen bg-white">
-            {/* 1. Standardized Green Navbar (Philip's Primary Requirement) */}
             <Navbar 
                 username={ipoData.username} 
                 onRefresh={refreshData} 
             />
 
-            {/* 2. Main Content Area - Split into 3 Clear Sections [Page 8] */}
             <main className="flex-grow flex flex-col p-4 space-y-6 max-w-md mx-auto w-full">
                 
-                {/* SECTION 1: MapCap Spot-price Graph */}
+                {/* Visualizing Market Performance */}
                 <section className="h-64 bg-white rounded-lg shadow-sm border border-gray-50 p-2">
                     <IpoChart data={ipoData.history} />
                 </section>
 
-                {/* SECTION 2: MapCap IPO Statistics */}
+                {/* Real-time IPO Metrics */}
                 <section className="py-2 border-t border-b border-gray-100">
                     <h2 className="text-[#007a33] font-bold text-sm mb-3">MapCap IPO Statistics:</h2>
                     <StatsBoard 
@@ -70,7 +60,7 @@ const App: React.FC = () => {
                     />
                 </section>
 
-                {/* SECTION 3: Action Buttons (Invest/Withdraw) */}
+                {/* Transaction Controls */}
                 <section className="pb-6">
                     <ActionButtons onTransactionSuccess={refreshData} />
                 </section>
