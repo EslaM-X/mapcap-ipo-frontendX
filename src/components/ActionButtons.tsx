@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { piService } from '../services/piService';
+import { piService } from '../services/piService.ts';
 
 interface ActionProps {
     onTransactionSuccess: () => void;
