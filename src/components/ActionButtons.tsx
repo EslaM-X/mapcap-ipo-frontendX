@@ -6,34 +6,41 @@ interface ActionProps {
 }
 
 /**
- * Dashboard controls for investing and withdrawing Pi.
+ * Enhanced controls for MapCap transactions.
+ * Fixes input zero-locking and triggers UI-wide metrics refresh.
  */
 const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
-    const [amount, setAmount] = useState<number>(1.0);
+    // Initialize as string to allow empty input and prevent "0" locking
+    const [amount, setAmount] = useState<string>("1");
     const [loading, setLoading] = useState(false);
 
     const handleInvest = async () => {
-        if (amount <= 0) return alert("Enter a valid amount");
+        const val = parseFloat(amount);
+        if (isNaN(val) || val <= 0) return alert("Enter a valid amount");
+        
         setLoading(true);
         try {
-            await piService.invest(amount);
-            onTransactionSuccess();
+            await piService.invest(val);
+            alert(`Success! Invested ${val} Pi.`);
+            onTransactionSuccess(); // Refreshes stats and chart points
         } catch (err) {
-            alert("Investment error");
+            alert("Investment failed");
         } finally {
             setLoading(false);
         }
     };
 
     const handleWithdraw = async () => {
-        if (amount <= 0) return alert("Enter amount to withdraw");
+        const val = parseFloat(amount);
+        if (isNaN(val) || val <= 0) return alert("Enter amount to withdraw");
+
         setLoading(true);
         try {
-            await piService.withdraw(amount);
-            onTransactionSuccess();
-            alert(`Success! Requested ${amount} Pi withdrawal.`);
+            await piService.withdraw(val);
+            alert(`Success! Requested ${val} Pi withdrawal.`);
+            onTransactionSuccess(); // Updates "Your Investment" and total metrics
         } catch (err) {
-            alert("Withdrawal failed. Check balance.");
+            alert("Withdrawal failed");
         } finally {
             setLoading(false);
         }
@@ -44,7 +51,8 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
             <input 
                 type="number" 
                 value={amount} 
-                onChange={(e) => setAmount(Number(e.target.value))} 
+                onChange={(e) => setAmount(e.target.value)} // String input prevents "0" issues
+                placeholder="1.0"
                 disabled={loading}
             />
             
