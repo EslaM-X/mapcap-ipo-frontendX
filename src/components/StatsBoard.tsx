@@ -7,11 +7,6 @@ interface StatsProps {
     capitalGain: number;
 }
 
-/**
- * MapCap IPO Stats Board
- * Spec: Philip Jennings [Page 8]
- * Displays real-time investment metrics with 20% discount logic.
- */
 const StatsBoard: React.FC<StatsProps> = ({ 
     totalInvestors = 0, 
     totalPiInvested = 0, 
@@ -19,12 +14,13 @@ const StatsBoard: React.FC<StatsProps> = ({
     capitalGain = 0 
 }) => {
     
-    // Formatting helper for cleaner UI logic
+    // Formatting helper for localized numeric display
     const formatPi = (value: number) => value.toLocaleString(undefined, { minimumFractionDigits: 2 });
 
     return (
         <div className="space-y-3">
             <ul className="space-y-4 text-[#333] text-sm md:text-base">
+                {/* Global Ecosystem Metrics */}
                 <li className="flex justify-between items-center border-b border-gray-50 pb-2">
                     <span>Total investors to date:</span>
                     <span className="font-bold text-gray-800">{totalInvestors.toLocaleString()}</span>
@@ -35,6 +31,7 @@ const StatsBoard: React.FC<StatsProps> = ({
                     <span className="font-bold text-gray-800">{formatPi(totalPiInvested)} π</span>
                 </li>
 
+                {/* Individual User Metrics (On-chain Sync) */}
                 <li className="flex justify-between items-center border-b border-gray-50 pb-2">
                     <span>Your pi invested to date:</span>
                     <span className="font-bold text-gray-800">{formatPi(userPiInvested)} π</span>
