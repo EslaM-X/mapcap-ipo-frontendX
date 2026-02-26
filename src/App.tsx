@@ -18,14 +18,20 @@ const App: React.FC = () => {
 
     const [loading, setLoading] = useState<boolean>(false);
 
-    // Sync UI with On-chain data from Backend
+    // Syncing UI with current On-chain metrics from Backend
     const refreshData = async () => {
         setLoading(true);
         try {
             const data = await piService.getIpoStatus();
-            setIpoData(prev => ({ ...prev, ...data }));
+            // Mapping backend keys to frontend state for consistency
+            setIpoData(prev => ({ 
+                ...prev, 
+                ...data,
+                userPiInvested: data.userPiBalance || 0,
+                capitalGain: data.spotPrice || 0
+            }));
         } catch (error) {
-            console.error("Sync failed: Check backend connectivity");
+            console.error("Dashboard sync failed. Connectivity issue.");
         } finally {
             setLoading(false);
         }
@@ -36,21 +42,21 @@ const App: React.FC = () => {
     }, []);
 
     return (
-        <div className="flex flex-col min-h-screen bg-white">
+        <div className="app-wrapper min-h-screen bg-white">
             <Navbar 
                 username={ipoData.username} 
                 onRefresh={refreshData} 
             />
 
-            <main className="flex-grow flex flex-col p-4 space-y-6 max-w-md mx-auto w-full">
+            <main className="content p-4 space-y-6 max-w-md mx-auto w-full">
                 
-                {/* Visualizing Market Performance */}
-                <section className="h-64 bg-white rounded-lg shadow-sm border border-gray-50 p-2">
+                {/* Section 1: Spot-price Visualization */}
+                <section className="chart-container h-64 bg-white rounded-lg shadow-sm border border-gray-50 p-2">
                     <IpoChart data={ipoData.history} />
                 </section>
 
-                {/* Real-time IPO Metrics */}
-                <section className="py-2 border-t border-b border-gray-100">
+                {/* Section 2: IPO Metrics Display */}
+                <section className="stats-card py-2 border-t border-b border-gray-100">
                     <h2 className="text-[#007a33] font-bold text-sm mb-3">MapCap IPO Statistics:</h2>
                     <StatsBoard 
                         totalInvestors={ipoData.totalInvestors}
@@ -60,8 +66,8 @@ const App: React.FC = () => {
                     />
                 </section>
 
-                {/* Transaction Controls */}
-                <section className="pb-6">
+                {/* Section 3: Transaction Hub */}
+                <section className="actions-footer pb-6">
                     <ActionButtons onTransactionSuccess={refreshData} />
                 </section>
 
