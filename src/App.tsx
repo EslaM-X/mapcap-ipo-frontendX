@@ -10,8 +10,8 @@ const App: React.FC = () => {
     const [ipoData, setIpoData] = useState({
         username: "Pioneer",
         totalInvestors: 125,
-        totalPiInvested: 4900,
-        userPiInvested: 50, 
+        totalPiInvested: 4850.00,
+        userPiInvested: 50.00, 
         capitalGain: 445.269,
         history: [] 
     });
@@ -29,34 +29,35 @@ const App: React.FC = () => {
 
     return (
         <div className="app-wrapper min-h-screen bg-[#f4f1ea]">
+            {/* النيفبار ثابت في الأعلى */}
             <Navbar username={ipoData.username} onRefresh={refreshData} />
 
-            <main className="content pt-[95px] px-4 pb-12 max-w-[420px] mx-auto w-full space-y-5">
+            {/* الحاوية الرئيسية مضبوطة لتطابق عرض شاشة الموبايل في الصورة */}
+            <main className="content pt-[85px] max-w-[450px] mx-auto w-full flex flex-col items-center">
                 
-                <section className="bg-white rounded-xl shadow-sm border border-[#d1cfc8] p-3">
-                    <h3 className="text-center font-bold text-[#444] text-[13px] mb-3 uppercase tracking-tight">
-                        MapCap Spot-price
-                    </h3>
-                    <div className="h-[220px] w-full">
-                        <IpoChart data={ipoData.history} />
-                    </div>
-                </section>
+                {/* قسم الشارت: تم إزالة العناوين المكررة والـ padding الزائد 
+                   لأن المكون IpoChart أصبح يحتوي على بروازه وعنوانه الخاص
+                */}
+                <div className="w-full">
+                    <IpoChart data={ipoData.history} />
+                </div>
 
-                <section className="bg-[#f9f7f0] rounded-[24px] shadow-sm border border-[#e0ddd5] p-6">
-                    <h2 className="text-[#007a33] font-bold text-[14px] mb-4 uppercase">
-                        MapCap IPO Statistics:
-                    </h2>
+                {/* قسم الإحصائيات: تم إزالة العناوين المكررة 
+                   لأن المكون StatsBoard يحتوي داخله على العنوان والبرواز الدائري
+                */}
+                <div className="w-full">
                     <StatsBoard 
                         totalInvestors={ipoData.totalInvestors}
                         totalPiInvested={ipoData.totalPiInvested}
                         userPiInvested={ipoData.userPiInvested} 
                         capitalGain={ipoData.capitalGain}
                     />
-                </section>
+                </div>
 
-                <section className="w-full">
+                {/* قسم الأزرار: كما هو لضمان عمل الـ Transaction */}
+                <div className="w-full px-4 mt-2">
                     <ActionButtons onTransactionSuccess={refreshData} />
-                </section>
+                </div>
 
             </main>
         </div>
