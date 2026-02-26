@@ -1,93 +1,67 @@
-/* Container: Fixed Navigation at the top with correct brand color */
-nav {
+/* Fix for the huge green block and vertical icons */
+.navbar-main {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
+  background-color: #007a33; /* Dark Pi Green */
   z-index: 1000;
-  background-color: #007a33; /* Map of Pi Dark Green */
   display: flex;
-  flex-direction: column; /* Vertical stack: Title on top, Icons below */
-  align-items: center;
-  width: 100%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  box-sizing: border-box;
+  flex-direction: column;
+  padding: 8px 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
-/* Horizontal Row for Icons: The fix for horizontal alignment */
+.nav-brand-area {
+  width: 100%;
+  text-align: center;
+  padding-bottom: 5px;
+}
+
+.nav-title {
+  color: #ffd700; /* Gold */
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* This forces icons to be side-by-side */
 .nav-icons-row {
   display: flex;
-  flex-direction: row; /* Force horizontal layout */
+  flex-direction: row;
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  padding: 5px 15px 10px 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 10px;
 }
 
-/* Base Navigation Item Styles */
 .nav-item {
-  width: 40px;
-  height: 40px;
+  background: transparent;
   border: none;
-  background-color: transparent;
+  color: #ffd700;
+  padding: 10px;
   cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.2s ease;
-  outline: none;
-  color: #ffd700; /* Map of Pi Gold */
 }
 
-/* Central Pi Icon Pin Style - Matches 1000303277.png */
-.pi-pin {
+.nav-item svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Map of Pi Pin Effect */
+.pi-pin-marker {
   background-color: #004d20;
   border: 2px solid #ffd700;
-  border-radius: 50% 50% 50% 5%;
+  width: 34px;
+  height: 34px;
+  border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
-  width: 38px;
-  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: -5px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-.pi-pin span {
+.pi-symbol {
   transform: rotate(45deg);
   color: #ffd700;
   font-weight: 900;
   font-size: 20px;
-}
-
-/* Interaction: Feedback on touch/click */
-.nav-item:active {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-}
-
-/* Ensure SVG icons scale properly */
-.nav-item svg {
-  width: 24px;
-  height: 24px;
-  stroke: #ffd700;
-  transition: transform 0.2s ease;
-}
-
-.nav-item.disabled {
-  opacity: 0.4;
-  cursor: default;
-  pointer-events: none;
-}
-
-/* Pulse animation for notifications (if needed) */
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: .5; }
 }
