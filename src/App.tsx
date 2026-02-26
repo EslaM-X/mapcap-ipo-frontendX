@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-// التأكد من أن المسارات بتبدأ بـ ./components (حرف صغير) 
-// لأن ده اللي شفناه في الـ Terminal عندك
-import Navbar from './components/Navbar';
-import StatsBoard from './components/StatsBoard';
-import IpoChart from './components/IpoChart';
-import ActionButtons from './components/ActionButtons';
-import { piService } from './services/piService';
+// توجيه Webpack للمسار الصحيح المقطوع به في Termux عبر مجلد src
+import Navbar from './src/components/Navbar';
+import StatsBoard from './src/components/StatsBoard';
+import IpoChart from './src/components/IpoChart';
+import ActionButtons from './src/components/ActionButtons';
+import { piService } from './src/services/piService';
 import './App.css';
 
 const App: React.FC = () => {
@@ -20,12 +19,11 @@ const App: React.FC = () => {
 
     const [loading, setLoading] = useState<boolean>(false);
 
-    // Syncing UI with current On-chain metrics from Backend
+    // Sync UI with on-chain metrics via backend API
     const refreshData = async () => {
         setLoading(true);
         try {
             const data = await piService.getIpoStatus();
-            // الربط الصحيح بين مسميات الباك إند والفرونت إند
             setIpoData(prev => ({ 
                 ...prev, 
                 ...data,
@@ -33,7 +31,7 @@ const App: React.FC = () => {
                 capitalGain: data.spotPrice || 0
             }));
         } catch (error) {
-            console.error("Dashboard sync failed. Connectivity issue.");
+            console.error("Dashboard sync failed.");
         } finally {
             setLoading(false);
         }
@@ -45,19 +43,16 @@ const App: React.FC = () => {
 
     return (
         <div className="app-wrapper min-h-screen bg-white">
-            <Navbar 
-                username={ipoData.username} 
-                onRefresh={refreshData} 
-            />
+            <Navbar username={ipoData.username} onRefresh={refreshData} />
 
             <main className="content p-4 space-y-6 max-w-md mx-auto w-full">
                 
-                {/* Section 1: Spot-price Visualization */}
+                {/* Visualizing real-time spot price history */}
                 <section className="chart-container h-64 bg-white rounded-lg shadow-sm border border-gray-50 p-2">
                     <IpoChart data={ipoData.history} />
                 </section>
 
-                {/* Section 2: IPO Metrics Display */}
+                {/* MapCap IPO Key Metrics */}
                 <section className="stats-card py-2 border-t border-b border-gray-100">
                     <h2 className="text-[#007a33] font-bold text-sm mb-3">MapCap IPO Statistics:</h2>
                     <StatsBoard 
@@ -68,7 +63,7 @@ const App: React.FC = () => {
                     />
                 </section>
 
-                {/* Section 3: Transaction Hub */}
+                {/* On-chain Transaction Hub */}
                 <section className="actions-footer pb-6">
                     <ActionButtons onTransactionSuccess={refreshData} />
                 </section>
