@@ -1,8 +1,8 @@
-/* Core Branding & Color Variables */
+/* Branding & Layout Variables */
 :root {
     --pi-green: #2e7d32;
     --pi-gold: #ffd700;
-    --pi-bg-soft: #fdfaf3; /* Matching the ivory background in high-fidelity design */
+    --pi-bg-soft: #fdfaf3; 
     --text-main: #333333;
     --chart-line: #2e7d32;
     --chart-grid: #e0e0e0;
@@ -11,29 +11,48 @@
 body {
     background-color: var(--pi-bg-soft);
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, sans-serif;
     color: var(--text-main);
 }
 
-/* Navbar: Corporate style matching prototype */
 .navbar {
     background-color: var(--pi-green);
     color: var(--pi-gold);
     padding: 12px;
     text-align: center;
     font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Balanced layout for Dashboard sections */
-.top-section, .middle-section, .bottom-section {
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* --- Stats Card Styling (Matching Prototype) --- */
+.stats-card {
+    background: #f9f7f0; /* Soft ivory card background */
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    width: 90%;
+    max-width: 400px;
+    margin-top: 15px;
 }
 
-/* --- SVG Line Chart Styling --- */
+.stats-header {
+    font-size: 15px;
+    color: #444;
+    margin: 0 0 10px 0;
+}
+
+.stats-list {
+    list-style: none;
+    padding: 0;
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+.gain-text {
+    color: var(--pi-green);
+    font-weight: bold;
+}
+
+/* --- SVG Line Chart Section --- */
 .chart-container {
     background: #ffffff;
     border-radius: 16px;
@@ -41,20 +60,12 @@ body {
     padding: 20px;
     width: 90%;
     max-width: 400px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin: 10px 0;
 }
 
-.chart-title {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-/* SVG responsiveness and line effects */
 .line-chart-svg {
     width: 100%;
-    height: 180px;
+    height: 150px;
     overflow: visible;
 }
 
@@ -63,7 +74,6 @@ body {
     stroke: var(--chart-line);
     stroke-width: 3;
     stroke-linecap: round;
-    stroke-linejoin: round;
 }
 
 .grid-line {
@@ -71,52 +81,42 @@ body {
     stroke-width: 1;
 }
 
-.chart-point {
-    fill: #ffffff;
-    stroke: var(--chart-line);
-    stroke-width: 2;
-}
-
-.axis-label {
-    font-size: 10px;
-    fill: #888;
-}
-/* --- End of Chart Styling --- */
-
-/* Action Buttons: Clean & Professional */
-button {
-    background-color: var(--pi-green);
-    color: var(--pi-gold);
-    border-radius: 12px;
-    padding: 14px 28px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.1s;
-    width: 140px;
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-button:disabled {
-    opacity: 0.5;
-    background-color: #ccc;
-}
-
-.btn-withdraw {
-    background-color: transparent;
-    border: 2px solid var(--pi-green);
-    color: var(--pi-green);
+/* --- Action Controls (Fixing Side-by-Side buttons) --- */
+.actions-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 input {
     padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    width: 70px;
-    margin-bottom: 10px;
+    border-radius: 12px;
+    border: 2px solid #ddd;
+    width: 80px;
     text-align: center;
     font-size: 16px;
+    font-weight: bold;
+}
+
+button {
+    background-color: var(--pi-green);
+    color: var(--pi-gold);
+    border-radius: 12px;
+    padding: 12px 20px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+.btn-withdraw {
+    background-color: #ffffff;
+    border: 2px solid var(--pi-green);
+    color: var(--pi-green);
+}
+
+button:disabled {
+    opacity: 0.5;
 }
