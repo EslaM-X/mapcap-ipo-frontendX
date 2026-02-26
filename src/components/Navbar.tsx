@@ -5,10 +5,6 @@ interface NavbarProps {
   onRefresh: () => void;
 }
 
-/**
- * MapCapIPO Navbar - TypeScript Version
- * Built to Philip Jennings' branding specs [Page 8]
- */
 const Navbar: React.FC<NavbarProps> = ({ username, onRefresh }) => {
   
   const handleHelp = (): void => {
@@ -17,35 +13,33 @@ const Navbar: React.FC<NavbarProps> = ({ username, onRefresh }) => {
 
   return (
     <nav className="bg-[#007a33] p-3 flex flex-col items-center shadow-md w-full">
-      {/* App Branding & User context */}
+      {/* Brand Identity & User Context */}
       <div className="text-[#ffd700] font-bold text-lg mb-2 tracking-wide">
         MapCapIPO {username ? `- @${username}` : 'app'}
       </div>
 
-      {/* Standardized Navigation Icons */}
+      {/* Navigation & Action Elements */}
       <div className="flex justify-between w-full max-w-sm px-4 items-center">
         
-        {/* Navigation (Disabled per spec UI) */}
+        {/* Navigation - Reserved for Future Scaling */}
         <button className="text-[#ffd700] text-2xl opacity-40 cursor-not-allowed">←</button>
         <button className="text-[#ffd700] text-2xl opacity-40 cursor-not-allowed">🏠</button>
 
-        {/* Central Pi Identity */}
+        {/* Core Pi Symbol - Visual Anchor */}
         <div className="bg-[#007a33] border-2 border-[#ffd700] rounded-full w-12 h-12 flex items-center justify-center shadow-inner">
           <span className="text-[#ffd700] font-bold text-2xl">π</span>
         </div>
 
-        {/* Functional Icons */}
+        {/* Interaction: Help & Sync */}
         <button 
           onClick={handleHelp} 
           className="text-[#ffd700] text-2xl hover:scale-110 transition-transform"
-          aria-label="Help"
         >
           ❓
         </button>
         <button 
           onClick={onRefresh} 
           className="text-[#ffd700] text-2xl hover:rotate-180 transition-transform duration-500"
-          aria-label="Refresh"
         >
           ↻
         </button>
@@ -56,4 +50,3 @@ const Navbar: React.FC<NavbarProps> = ({ username, onRefresh }) => {
 };
 
 export default Navbar;
-
