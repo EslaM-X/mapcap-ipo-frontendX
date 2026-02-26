@@ -5,12 +5,7 @@ interface ActionProps {
     onTransactionSuccess: () => void;
 }
 
-/**
- * Enhanced controls for MapCap transactions.
- * Fixes input zero-locking and triggers UI-wide metrics refresh.
- */
 const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
-    // Initialize as string to allow empty input and prevent "0" locking
     const [amount, setAmount] = useState<string>("1");
     const [loading, setLoading] = useState(false);
 
@@ -21,8 +16,11 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
         setLoading(true);
         try {
             await piService.invest(val);
-            alert(`Success! Invested ${val} Pi.`);
-            onTransactionSuccess(); // Refreshes stats and chart points
+            // انتظر ثانية واحدة لضمان تحديث البيانات في الباك إند
+            setTimeout(async () => {
+                await onTransactionSuccess(); 
+                alert(`Success! Invested ${val} π`);
+            }, 1000);
         } catch (err) {
             alert("Investment failed");
         } finally {
@@ -37,8 +35,8 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
         setLoading(true);
         try {
             await piService.withdraw(val);
+            await onTransactionSuccess(); 
             alert(`Success! Requested ${val} Pi withdrawal.`);
-            onTransactionSuccess(); // Updates "Your Investment" and total metrics
         } catch (err) {
             alert("Withdrawal failed");
         } finally {
@@ -51,15 +49,13 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
             <input 
                 type="number" 
                 value={amount} 
-                onChange={(e) => setAmount(e.target.value)} // String input prevents "0" issues
+                onChange={(e) => setAmount(e.target.value)}
                 placeholder="1.0"
                 disabled={loading}
             />
-            
             <button onClick={handleInvest} disabled={loading}>
                 {loading ? "..." : "Invest Pi"}
             </button>
-            
             <button className="btn-withdraw" onClick={handleWithdraw} disabled={loading}>
                 Withdraw Pi
             </button>
