@@ -8,21 +8,22 @@ interface StatsProps {
 }
 
 /**
- * Renders IPO metrics in a clean, card-based layout.
- * Optimized for real-time reactivity during Invest/Withdraw actions.
+ * Enhanced StatsBoard with Null-safety.
+ * Prevents white screen by providing default values during initial fetch.
  */
 const StatsBoard: React.FC<StatsProps> = ({ 
-    totalInvestors, 
-    totalPiInvested, 
-    userPiBalance, 
-    spotPrice 
+    totalInvestors = 0, 
+    totalPiInvested = 0, 
+    userPiBalance = 0, 
+    spotPrice = 0.35 
 }) => {
     
-    // Core logic for gains based on spot price movement
+    // Fallback logic to ensure numbers never break the UI
     const initialPrice = 0.35;
     const currentPrice = spotPrice || initialPrice;
+    const safeBalance = userPiBalance || 0;
     
-    const capitalGain = userPiBalance > 0 
+    const capitalGain = safeBalance > 0 
         ? ((currentPrice - initialPrice) / initialPrice * 100).toFixed(2)
         : "0.00";
 
@@ -30,9 +31,9 @@ const StatsBoard: React.FC<StatsProps> = ({
         <div className="stats-card">
             <h3 className="stats-header">MapCap IPO Statistics:</h3>
             <ul className="stats-list">
-                <li>Total investors to date: <b>{totalInvestors.toLocaleString()}</b></li>
-                <li>Total pi invested to date: <b>{totalPiInvested.toLocaleString()} π</b></li>
-                <li>Your pi invested to date: <b>{userPiBalance.toLocaleString()} π</b></li>
+                <li>Total investors to date: <b>{(totalInvestors || 0).toLocaleString()}</b></li>
+                <li>Total pi invested to date: <b>{(totalPiInvested || 0).toLocaleString()} π</b></li>
+                <li>Your pi invested to date: <b>{safeBalance.toLocaleString()} π</b></li>
                 <li>Your capital gain to date: <span className="gain-text">+{capitalGain}%</span></li>
             </ul>
         </div>
