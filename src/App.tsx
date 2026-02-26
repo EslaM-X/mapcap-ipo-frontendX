@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+// التأكد من أن المسارات بتبدأ بـ ./components (حرف صغير) 
+// لأن ده اللي شفناه في الـ Terminal عندك
 import Navbar from './components/Navbar';
 import StatsBoard from './components/StatsBoard';
 import IpoChart from './components/IpoChart';
@@ -23,7 +25,7 @@ const App: React.FC = () => {
         setLoading(true);
         try {
             const data = await piService.getIpoStatus();
-            // Mapping backend keys to frontend state for consistency
+            // الربط الصحيح بين مسميات الباك إند والفرونت إند
             setIpoData(prev => ({ 
                 ...prev, 
                 ...data,
