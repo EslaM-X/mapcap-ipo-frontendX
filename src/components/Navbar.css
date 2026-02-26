@@ -1,0 +1,21 @@
+.nav-item {
+  width: 35px;
+  height: 35px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.nav-item:active {
+  border-radius: 50%;
+  background-color: #d0d0d086;
+}
+
+.nav-item.disabled {
+  cursor: default;
+}
+
