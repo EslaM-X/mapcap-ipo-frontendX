@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// توجيه Webpack للمسار الصحيح المقطوع به في Termux عبر مجلد src
+// استخدام المسارات الكاملة بالامتدادات لضمان التعرف عليها في بيئة Termux
 import Navbar from './components/Navbar.tsx';
 import StatsBoard from './components/StatsBoard.tsx';
 import IpoChart from './components/IpoChart.tsx';
@@ -19,7 +19,7 @@ const App: React.FC = () => {
 
     const [loading, setLoading] = useState<boolean>(false);
 
-    // Sync UI with on-chain metrics via backend API
+    // Synchronize UI with blockchain metrics via backend service
     const refreshData = async () => {
         setLoading(true);
         try {
@@ -31,7 +31,7 @@ const App: React.FC = () => {
                 capitalGain: data.spotPrice || 0
             }));
         } catch (error) {
-            console.error("Dashboard sync failed.");
+            console.error("Dashboard synchronization failed.");
         } finally {
             setLoading(false);
         }
@@ -42,19 +42,23 @@ const App: React.FC = () => {
     }, []);
 
     return (
-        <div className="app-wrapper min-h-screen bg-white">
+        <div className="app-wrapper min-h-screen bg-[#f8f9fa]">
+            {/* Fixed Navigation bar at the top */}
             <Navbar username={ipoData.username} onRefresh={refreshData} />
 
-            <main className="content p-4 space-y-6 max-w-md mx-auto w-full">
+            {/* Main Content Area: Padding top adjusted for fixed Navbar */}
+            <main className="content pt-[90px] p-4 space-y-6 max-w-md mx-auto w-full">
                 
-                {/* Visualizing real-time spot price history */}
-                <section className="chart-container h-64 bg-white rounded-lg shadow-sm border border-gray-50 p-2">
+                {/* Real-time IPO Chart Visualization */}
+                <section className="chart-container h-64 bg-white rounded-xl shadow-sm border border-gray-100 p-2">
                     <IpoChart data={ipoData.history} />
                 </section>
 
-                {/* MapCap IPO Key Metrics */}
-                <section className="stats-card py-2 border-t border-b border-gray-100">
-                    <h2 className="text-[#007a33] font-bold text-sm mb-3">MapCap IPO Statistics:</h2>
+                {/* Core On-chain Statistics Board */}
+                <section className="stats-container bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                    <h2 className="text-[#007a33] font-bold text-sm mb-4 uppercase tracking-wider">
+                        MapCap IPO Statistics
+                    </h2>
                     <StatsBoard 
                         totalInvestors={ipoData.totalInvestors}
                         totalPiInvested={ipoData.totalPiInvested}
@@ -63,8 +67,8 @@ const App: React.FC = () => {
                     />
                 </section>
 
-                {/* On-chain Transaction Hub */}
-                <section className="actions-footer pb-6">
+                {/* Transaction Controls (Invest/Withdraw) */}
+                <section className="actions-footer pb-8">
                     <ActionButtons onTransactionSuccess={refreshData} />
                 </section>
 
