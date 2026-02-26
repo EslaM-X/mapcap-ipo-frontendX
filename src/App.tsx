@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 // توجيه Webpack للمسار الصحيح المقطوع به في Termux عبر مجلد src
-import Navbar from './src/components/Navbar.tsx';
-import StatsBoard from './src/components/StatsBoard.tsx';
-import IpoChart from './src/components/IpoChart.tsx';
-import ActionButtons from './src/components/ActionButtons.tsx';
-import { piService } from './src/services/piService.ts';
+import Navbar from './components/Navbar.tsx';
+import StatsBoard from './components/StatsBoard.tsx';
+import IpoChart from './components/IpoChart.tsx';
+import ActionButtons from './components/ActionButtons.tsx';
+import { piService } from './services/piService.ts';
 import './App.css';
 
 const App: React.FC = () => {
