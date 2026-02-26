@@ -6,76 +6,68 @@ interface ChartData {
 }
 
 /**
- * Renders a professional SVG Line Chart for price trends.
- * Optimized for lightweight performance in Pi Browser.
+ * MapCap Spot-price Line Chart
+ * Spec: Philip Jennings [Page 8]
+ * Optimized SVG for Pi Browser compatibility.
  */
 const IpoChart: React.FC<{ data: ChartData[] }> = ({ data }) => {
-    const displayData = data && data.length > 0 ? data : [
-        { day: 1, price: 0.350 },
-        { day: 5, price: 0.380 },
-        { day: 10, price: 0.410 },
-        { day: 15, price: 0.436 }
-    ];
+    // Default values strictly matching the document's Day 0 - 28 range
+    const displayData = data?.length > 0 ? data : [{ day: 0, price: 0 }];
 
-    // Chart dimensions for SVG coordinate mapping
-    const width = 300;
-    const height = 150;
-    const padding = 30;
+    const width = 350;
+    const height = 200;
+    const padding = 40;
 
-    const maxPrice = Math.max(...displayData.map(d => d.price), 0.5);
-    const minPrice = Math.min(...displayData.map(d => d.price), 0.3);
-    const maxDay = Math.max(...displayData.map(d => d.day), 28);
+    // Spec scale: Y-axis from 0 to 60, X-axis from 0 to 28
+    const yScaleMax = 60;
+    const xScaleMax = 28;
 
-    /**
-     * Maps data points to SVG coordinate space.
-     */
     const getCoords = (day: number, price: number) => {
-        const x = (day / maxDay) * (width - padding * 2) + padding;
-        const y = height - ((price - minPrice) / (maxPrice - minPrice)) * (height - padding * 2) - padding;
+        const x = (day / xScaleMax) * (width - padding * 2) + padding;
+        const y = height - (price / yScaleMax) * (height - padding * 2) - padding;
         return { x, y };
     };
 
-    // Construct the SVG path string (Move to first point, then line to others)
     const linePath = displayData.reduce((path, point, i) => {
         const { x, y } = getCoords(point.day, point.price);
         return i === 0 ? `M ${x} ${y}` : `${path} L ${x} ${y}`;
     }, "");
 
     return (
-        <div className="chart-container">
-            <h4 className="chart-title">MapCap Spot-price</h4>
-            <svg viewBox={`0 0 ${width} ${height}`} className="line-chart-svg">
-                {/* Horizontal Grid Lines */}
-                {[0, 0.5, 1].map((tick) => (
-                    <line 
-                        key={tick}
-                        x1={padding} y1={padding + tick * (height - padding * 2)} 
-                        x2={width - padding} y2={padding + tick * (height - padding * 2)} 
-                        className="grid-line" 
-                    />
-                ))}
-
-                {/* The Price Trend Line */}
-                <path d={linePath} className="chart-path" />
-
-                {/* Interactive Data Points */}
-                {displayData.map((point, i) => {
-                    const { x, y } = getCoords(point.day, point.price);
+        <div className="w-full flex flex-col items-center">
+            <h4 className="text-[#007a33] font-bold text-sm self-start mb-2">MapCap Spot-price</h4>
+            
+            <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto">
+                {/* Y-Axis Grid Lines & Labels [12.0, 24.0, 36.0, 48.0, 60.0] */}
+                {[12, 24, 36, 48, 60].map((val) => {
+                    const { y } = getCoords(0, val);
                     return (
-                        <g key={i}>
-                            <circle cx={x} cy={y} r="3" className="chart-point" />
-                            {i === displayData.length - 1 && (
-                                <text x={x} y={y - 10} className="price-tag" textAnchor="middle">
-                                    {point.price.toFixed(3)}
-                                </text>
-                            )}
+                        <g key={val}>
+                            <line x1={padding} y1={y} x2={width - padding} y2={y} stroke="#f0f0f0" strokeWidth="1" />
+                            <text x={padding - 5} y={y + 4} textAnchor="end" className="text-[10px] fill-gray-400">{val.toFixed(1)}</text>
                         </g>
                     );
                 })}
 
-                {/* Axis Labels */}
-                <text x={padding} y={height - 5} className="axis-label">Day 0</text>
-                <text x={width - padding} y={height - 5} className="axis-label" textAnchor="end">Day {maxDay}</text>
+                {/* The Green Trend Line */}
+                <path d={linePath} fill="none" stroke="#007a33" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+
+                {/* X-Axis Labels [Day 0, 7, 14, 21, 28] */}
+                {[0, 7, 14, 21, 28].map((day) => {
+                    const { x } = getCoords(day, 0);
+                    return (
+                        <text key={day} x={x} y={height - 15} textAnchor="middle" className="text-[10px] fill-gray-400">
+                            {day === 0 ? "Day 0" : day}
+                        </text>
+                    );
+                })}
+
+                {/* Empty State Text */}
+                {displayData.length <= 1 && (
+                    <text x={width / 2} y={height / 2} textAnchor="middle" className="fill-[#007a33] italic text-xs">
+                        Calculating...
+                    </text>
+                )}
             </svg>
         </div>
     );
