@@ -1,0 +1,104 @@
+:root {
+    --pi-green: #2e7d32;
+    --pi-gold: #ffd700;
+    --pi-bg-soft: #fdfaf3; 
+}
+
+body {
+    background-color: var(--pi-bg-soft);
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+}
+
+/* Container to center all content */
+.app-wrapper {
+    width: 100%;
+    max-width: 450px; /* Mobile-friendly width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.navbar {
+    width: 100%;
+    background-color: var(--pi-green);
+    color: var(--pi-gold);
+    padding: 15px 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center all sections */
+}
+
+.top-section, .middle-section, .bottom-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+/* Stats Card Styling */
+.stats-card {
+    background: #f9f7f0;
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    width: 85%;
+    text-align: left;
+}
+
+.stats-list {
+    list-style: none;
+    padding: 0;
+    line-height: 1.8;
+}
+
+/* Chart Container Centering */
+.chart-container {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #eee;
+    padding: 20px;
+    width: 85%;
+}
+
+.line-chart-svg {
+    width: 100%;
+    height: 160px;
+    overflow: visible;
+}
+
+/* Action Buttons Flexbox */
+.actions-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+input {
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid #ddd;
+    width: 70px;
+    text-align: center;
+}
+
+button {
+    background-color: var(--pi-green);
+    color: var(--pi-gold);
+    border-radius: 12px;
+    padding: 12px 18px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
