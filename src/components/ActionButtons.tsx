@@ -10,39 +10,40 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
     const [withdrawPercent, setWithdrawPercent] = useState<string>("50");
     const [loading, setLoading] = useState<boolean>(false);
 
-    // Executes On-chain payment flow via Pi SDK
+    // On-chain investment flow via Pi SDK
     const handleInvest = async () => {
         const val = parseFloat(investAmount);
-        if (isNaN(val) || val <= 0) return alert("Please enter a valid amount.");
+        if (isNaN(val) || val <= 0) return alert("Invalid amount.");
         
         setLoading(true);
         try {
             await piService.invest(val);
+            // Slight delay to ensure on-chain finality before UI refresh
             setTimeout(async () => {
                 await onTransactionSuccess();
-                alert(`Transaction confirmed: ${val} π added to IPO.`);
+                alert(`Confirmed: ${val} π added to IPO.`);
             }, 1500);
         } catch (err) {
-            alert("Payment process aborted.");
+            alert("Payment cancelled or failed.");
         } finally {
             setLoading(false);
         }
     };
 
-    // Relays withdrawal request to Backend API
+    // Withdrawal relay to Backend API
     const handleWithdraw = async () => {
         const percent = parseFloat(withdrawPercent);
         if (isNaN(percent) || percent <= 0 || percent > 100) {
-            return alert("Enter a valid percentage (1-100).");
+            return alert("Enter percentage (1-100).");
         }
 
         setLoading(true);
         try {
             await piService.withdraw(percent);
             await onTransactionSuccess();
-            alert(`Withdrawal request for ${percent}% sent successfully.`);
+            alert(`Withdrawal of ${percent}% processed.`);
         } catch (err) {
-            alert("Withdrawal failed. Check your balance.");
+            alert("Withdrawal failed.");
         } finally {
             setLoading(false);
         }
@@ -50,12 +51,12 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
 
     return (
         <div className="flex flex-col space-y-4 w-full">
-            {/* Investment Control Group */}
+            {/* Investment UI Group */}
             <div className="flex items-center space-x-2">
                 <button 
                     onClick={handleInvest} 
                     disabled={loading}
-                    className="flex-1 bg-[#007a33] text-white py-3 rounded-xl font-bold active:bg-green-900 disabled:opacity-50 transition-colors"
+                    className="flex-1 bg-[#007a33] text-white py-3 rounded-xl font-bold active:scale-95 disabled:opacity-50 transition-all"
                 >
                     {loading ? "Processing..." : "Invest Pi"}
                 </button>
@@ -68,12 +69,12 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
                 />
             </div>
 
-            {/* Withdrawal Control Group */}
+            {/* Withdrawal UI Group */}
             <div className="flex items-center space-x-2">
                 <button 
                     onClick={handleWithdraw} 
                     disabled={loading}
-                    className="flex-1 bg-[#007a33] text-white py-3 rounded-xl font-bold active:bg-green-900 disabled:opacity-50 transition-colors"
+                    className="flex-1 bg-[#007a33] text-white py-3 rounded-xl font-bold active:scale-95 disabled:opacity-50 transition-all"
                 >
                     Withdraw Pi
                 </button>
