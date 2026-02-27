@@ -1,111 +1,94 @@
-/* Core Navbar Styling */
+/* Optimized Mobile-First Navbar */
 .navbar-main {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  background-color: #007a33; /* Pi Brand Green */
+  background-color: #007a33; /* Pi Green */
   z-index: 1000;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  width: 100%;
-  padding: 4px 0; /* Reduced padding to save vertical space */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  /* Force a slim height on mobile */
+  height: 70px; 
+  display: flex;
+  align-items: center;
 }
 
-/* Container to handle internal layout */
 .navbar-container {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
+  justify-content: center;
 }
 
 .nav-brand-area {
   width: 100%;
   text-align: center;
-  padding: 2px 0;
+  margin-bottom: -2px; /* Pull icons closer to title */
 }
 
 .nav-title {
   color: #ffd700; /* Pi Gold */
-  font-size: 16px; /* Slightly smaller for mobile optimization */
-  font-weight: bold;
+  font-size: 14px; /* Slimmer font for mobile */
+  font-weight: 700;
   margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* Horizontal alignment for action icons */
 .nav-icons-row {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-evenly;
   align-items: center;
   width: 100%;
-  max-width: 500px; /* Limits width on large screens */
-  padding: 0 5px;
+  padding: 0 10px;
 }
 
 .nav-item {
   background: transparent;
   border: none;
   color: #ffd700;
-  padding: 8px; /* Balanced touch target */
+  padding: 5px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.2s;
-}
-
-.nav-item:active {
-  opacity: 0.7;
 }
 
 .nav-item svg {
-  width: 22px; /* Optimized icon size */
-  height: 22px;
+  width: 20px; /* Slimmer icons */
+  height: 20px;
 }
 
-.opacity-40 {
-  opacity: 0.4;
-}
-
-/* Pi Map Pin Styling - Visual Core */
-.pi-pin-container {
-  padding: 0 10px;
-}
-
+/* Pi Marker Styling */
 .pi-pin-marker {
   background-color: #004d20;
-  border: 2px solid #ffd700;
-  width: 30px; /* Scaled down for mobile */
-  height: 30px;
+  border: 1.5px solid #ffd700;
+  width: 28px; /* Compact pin */
+  height: 28px;
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: -5px; /* Offset to align visually */
 }
 
 .pi-symbol {
   transform: rotate(45deg);
   color: #ffd700;
   font-weight: 900;
-  font-size: 18px;
+  font-size: 16px;
 }
 
-/* --- Responsive Adjustments --- */
-
-/* For Tablets and Desktop (Screens wider than 768px) */
+/* Desktop & Tablet Optimization */
 @media (min-width: 768px) {
   .navbar-main {
-    padding: 8px 0;
+    height: 90px;
   }
   
   .nav-title {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .nav-item svg {
@@ -114,19 +97,18 @@
   }
 
   .pi-pin-marker {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
   }
 }
 
-/* Safety Margin for the Content below the Navbar */
-/* Apply this to your main app wrapper or body in App.css */
-body {
-  padding-top: 85px; /* Adjust this value to ensure the Chart is visible */
+/* Add this to your Global CSS or App.css to prevent content overlap */
+.app-content-wrapper {
+  padding-top: 80px; /* Matches mobile navbar height + buffer */
 }
 
 @media (min-width: 768px) {
-  body {
+  .app-content-wrapper {
     padding-top: 100px;
   }
 }
