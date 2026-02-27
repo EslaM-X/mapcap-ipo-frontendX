@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { piService } from '../services/piService.ts';
 
+/**
+ * ActionButtons Component
+ * Final Version: Perfectly centered with no horizontal overflow.
+ * Designed to align with the MapCap IPO visual hierarchy.
+ */
 interface ActionProps {
     onTransactionSuccess: () => void;
 }
@@ -10,6 +15,7 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
     const [withdrawPercent, setWithdrawPercent] = useState<string>("10");
     const [loading, setLoading] = useState<boolean>(false);
 
+    // Backend-compatible logic remains untouched
     const handleInvest = async () => {
         const val = parseFloat(investAmount);
         if (isNaN(val) || val <= 0) return alert("Invalid amount.");
@@ -42,17 +48,18 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
         }
     };
 
-    // Style for the merged container to make input and button look like one unit
+    // Style for the merged container - Adjusted for perfect centering
     const rowContainerStyle: React.CSSProperties = {
         display: 'flex',
-        width: '100%',
-        maxWidth: '380px',
-        height: '55px',
+        width: '92%', // Takes most of the width but leaves safe breathing room
+        maxWidth: '360px', // Limits size on larger screens
+        height: '54px',
         backgroundColor: '#ffffff',
-        borderRadius: '15px', // Rounded corners for the whole unit
+        borderRadius: '16px', 
         border: '1.5px solid #bcbcbc',
-        overflow: 'hidden', // Ensures the button and input don't spill out
-        marginBottom: '15px'
+        overflow: 'hidden', 
+        marginBottom: '15px',
+        boxSizing: 'border-box' // Essential to prevent horizontal scroll
     };
 
     const inputAreaStyle: React.CSSProperties = {
@@ -60,7 +67,6 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
         display: 'flex',
         alignItems: 'center',
         padding: '0 15px',
-        position: 'relative'
     };
 
     const inputStyle: React.CSSProperties = {
@@ -69,7 +75,8 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
         outline: 'none',
         fontSize: '18px',
         backgroundColor: 'transparent',
-        color: '#555'
+        color: '#333',
+        padding: '0'
     };
 
     const buttonStyle: React.CSSProperties = {
@@ -80,13 +87,25 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
         fontWeight: 'bold',
         fontSize: '16px',
         cursor: 'pointer',
-        transition: 'background 0.2s'
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
     };
 
     return (
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 15px' }}>
+        /* The Outer Wrapper: Using flex and overflow-x-hidden for a clean mobile experience */
+        <div style={{ 
+            width: '100%', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            padding: '10px 0',
+            overflowX: 'hidden' // Prevents any horizontal scrolling
+        }}>
             
-            {/* Investment Row - Merged Design */}
+            {/* Investment Row */}
             <div style={rowContainerStyle}>
                 <div style={inputAreaStyle}>
                     <input 
@@ -103,7 +122,7 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
                 </button>
             </div>
 
-            {/* Withdrawal Row - Merged Design */}
+            {/* Withdrawal Row */}
             <div style={rowContainerStyle}>
                 <div style={inputAreaStyle}>
                     <input 
