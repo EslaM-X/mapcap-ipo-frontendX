@@ -7,11 +7,11 @@ import { piService } from './services/piService.ts';
 import './App.css';
 
 /**
- * Main Application Component
- * Handles on-chain data synchronization and main layout assembly.
+ * Main Application Component - Map of Pi Ecosystem.
+ * Orchestrates global state and ensures seamless UI/UX synchronization.
  */
 const App: React.FC = () => {
-    // IPO data state initialized with default values for early rendering
+    // IPO data state - Initialized with default values for immediate hydration
     const [ipoData, setIpoData] = useState({
         username: "Pioneer",
         totalInvestors: 125,
@@ -22,54 +22,58 @@ const App: React.FC = () => {
     });
 
     /**
-     * Fetches the latest IPO status from the backend/piService
-     * Ensures UI is reactive to on-chain transaction changes
+     * Synchronizes local state with backend/on-chain data via piService.
+     * Triggered on mount, manual refresh, and successful transactions.
      */
     const refreshData = async () => {
         try {
             const data = await piService.getIpoStatus();
             setIpoData(prev => ({ ...prev, ...data }));
         } catch (error) {
-            console.error("Blockchain synchronization failed:", error);
+            console.warn("Blockchain synchronization warning:", error);
+            // Fallback logic or error handling can be placed here
         }
     };
 
-    // Initial data fetch on component mount
-    useEffect(() => { refreshData(); }, []);
+    // Auto-sync on component mount
+    useEffect(() => { 
+        refreshData(); 
+    }, []);
 
     return (
-        /* Viewport wrapper with consistent Pi Network background color */
-        <div className="min-h-screen bg-[#f4f1ea] flex flex-col items-center overflow-x-hidden">
+        /* The 'app-wrapper' class from App.css handles the global padding-top
+           to prevent the fixed Navbar from covering the main content.
+        */
+        <div className="app-wrapper min-h-screen bg-[#f4f1ea] flex flex-col items-center">
             
-            {/* 1. Navigation Layer: Persistent top bar with user identity */}
+            {/* 1. Header Navigation: Persistent across all views */}
             <Navbar username={ipoData.username} onRefresh={refreshData} />
 
-            {/* 2. Primary Layout Container:
-                - pt-[100px] ensures content starts below the fixed Navbar
-                - items-center forces all children to be horizontally centered
-                - space-y-6 provides clean vertical breathing room between modules
+            {/* Main Content Layer: 
+               - pt-[20px] provides spacing below the global padding-top.
+               - space-y-4 ensures a tight, professional mobile layout.
             */}
-            <main className="w-full max-w-[450px] pt-[100px] flex flex-col items-center px-4 pb-16 space-y-6">
+            <main className="w-full max-w-[480px] pt-4 flex flex-col items-center px-4 pb-12 space-y-4">
                 
-                {/* Visual Data Module: Market price trends */}
-                <div className="w-full flex justify-center">
+                {/* 2. Market Analytics: Real-time Price Chart */}
+                <section className="w-full chart-section">
                     <IpoChart data={ipoData.history} />
-                </div>
+                </section>
 
-                {/* Analytical Module: Real-time investment metrics */}
-                <div className="w-full">
+                {/* 3. Performance Metrics: Stats Dashboard */}
+                <section className="w-full">
                     <StatsBoard 
                         totalInvestors={ipoData.totalInvestors}
                         totalPiInvested={ipoData.totalPiInvested}
                         userPiInvested={ipoData.userPiInvested} 
                         capitalGain={ipoData.capitalGain}
                     />
-                </div>
+                </section>
 
-                {/* Interaction Module: Financial transaction gateway */}
-                <div className="w-full">
+                {/* 4. Financial Gateway: Investment & Withdrawal Controls */}
+                <section className="w-full">
                     <ActionButtons onTransactionSuccess={refreshData} />
-                </div>
+                </section>
 
             </main>
         </div>
