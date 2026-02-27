@@ -1,42 +1,99 @@
+/**
+ * Global Styles for MapCap IPO Application.
+ * Tailored for Pi Network Branding and Mobile Responsiveness.
+ */
+
 :root {
-    --pi-green: #2e7d32;
+    --pi-green: #007a33; /* Updated to match Navbar brand green */
     --pi-gold: #ffd700;
-    --pi-bg-cream: #f4f1ea; /* اللون الكريمي المطابق للصورة */
+    --pi-bg-cream: #f4f1ea; /* Matches the background in the reference images */
     --card-bg: #f9f7f0;
+    
+    /* Navbar height variables for easy maintenance */
+    --nav-height-mobile: 70px;
+    --nav-height-desktop: 90px;
 }
 
 body {
     background-color: var(--pi-bg-cream);
     margin: 0;
+    padding: 0;
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     color: #333;
+    /* Prevent content from hiding behind the fixed navbar */
+    padding-top: var(--nav-height-mobile);
+}
+
+@media (min-width: 768px) {
+    body {
+        padding-top: var(--nav-height-desktop);
+    }
 }
 
 .app-wrapper {
     width: 100%;
-    min-height: 100vh;
+    min-height: calc(100vh - var(--nav-height-mobile));
+    display: flex;
+    flex-direction: column;
+    padding: 15px; /* Adds breathing room on sides */
+    box-sizing: border-box;
 }
 
-/* Card Styling to match the Reference UI */
+/* Container for the Chart and Stats */
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Glass Card Styling matching the Reference UI */
 .glass-card {
     background: var(--card-bg);
-    border-radius: 24px;
+    border-radius: 20px;
     border: 1px solid #e0ddd5;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     margin-bottom: 20px;
+    padding: 15px;
 }
 
+/* Specific Section for the Price Chart */
 .chart-section {
     background: #ffffff;
     border-radius: 12px;
     padding: 10px;
     border: 1px solid #d1cfc8;
+    margin-top: 10px;
 }
 
-/* Typography matching the image */
+/* Typography for Section Headers */
 .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2e7d32; /* Using Pi Green for titles */
+    margin: 10px 0;
+}
+
+/* List Statistics Styling */
+.stats-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.stats-item {
     font-size: 14px;
-    font-weight: 600;
+    margin-bottom: 8px;
     color: #444;
-    margin-bottom: 12px;
+}
+
+/* Utility to ensure responsiveness on small screens */
+@media (max-width: 480px) {
+    .glass-card {
+        padding: 10px;
+        border-radius: 12px;
+    }
+    
+    .section-title {
+        font-size: 15px;
+    }
 }
