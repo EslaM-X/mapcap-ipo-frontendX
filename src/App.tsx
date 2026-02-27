@@ -7,7 +7,6 @@ import { piService } from './services/piService.ts';
 import './App.css';
 
 const App: React.FC = () => {
-    // Initial state matching on-chain data structure
     const [ipoData, setIpoData] = useState({
         username: "Pioneer",
         totalInvestors: 0,
@@ -17,7 +16,6 @@ const App: React.FC = () => {
         history: [] 
     });
 
-    // Sync with Pi Network Sandbox / Backend
     const refreshData = async () => {
         try {
             const data = await piService.getIpoStatus();
@@ -30,15 +28,17 @@ const App: React.FC = () => {
     useEffect(() => { refreshData(); }, []);
 
     return (
-        <div className="min-h-screen bg-[#f4f1ea] flex flex-col">
+        <div className="min-h-screen bg-[#f4f1ea] flex flex-col items-center">
+            {/* Navigation Layer */}
             <Navbar username={ipoData.username} onRefresh={refreshData} />
 
-            <main className="w-full max-w-[480px] mx-auto pt-[90px] flex flex-col gap-2 pb-10">
+            {/* Main Content Layer - Optimized for Mobile Viewport */}
+            <main className="w-full max-w-[480px] pt-[85px] flex flex-col pb-12">
                 
-                {/* Visualizing MapCap Spot-price trend */}
+                {/* 1. Market Chart - Full Width to prevent text overlap */}
                 <IpoChart data={ipoData.history} />
 
-                {/* MapCap Performance Statistics Card */}
+                {/* 2. Statistics Section - Rounded Container */}
                 <div className="px-4">
                     <StatsBoard 
                         totalInvestors={ipoData.totalInvestors}
@@ -48,8 +48,8 @@ const App: React.FC = () => {
                     />
                 </div>
 
-                {/* Transaction Controls (Invest/Withdraw) */}
-                <div className="px-4 mt-2">
+                {/* 3. User Actions Layer */}
+                <div className="px-4 mt-4">
                     <ActionButtons onTransactionSuccess={refreshData} />
                 </div>
 
