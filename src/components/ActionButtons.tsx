@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
 import { piService } from '../services/piService.ts';
 
-/**
- * ActionButtons Component
- * Optimized with high-priority inline styling to ensure visual consistency
- * with the MapCap IPO design language.
- */
 interface ActionProps {
     onTransactionSuccess: () => void;
 }
 
 const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
-    const [investAmount, setInvestAmount] = useState<string>("1.0");
-    const [withdrawPercent, setWithdrawPercent] = useState<string>("50");
+    const [investAmount, setInvestAmount] = useState<string>("1");
+    const [withdrawPercent, setWithdrawPercent] = useState<string>("10");
     const [loading, setLoading] = useState<boolean>(false);
 
-    // Business Logic remains untouched for backend stability
     const handleInvest = async () => {
         const val = parseFloat(investAmount);
         if (isNaN(val) || val <= 0) return alert("Invalid amount.");
@@ -24,10 +18,10 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
             await piService.invest(val);
             setTimeout(async () => {
                 await onTransactionSuccess();
-                alert(`Confirmed: ${val} π added to IPO.`);
+                alert(`Confirmed: ${val} π added.`);
             }, 1500);
         } catch (err) {
-            alert("Payment cancelled or failed.");
+            alert("Payment failed.");
         } finally {
             setLoading(false);
         }
@@ -35,7 +29,7 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
 
     const handleWithdraw = async () => {
         const percent = parseFloat(withdrawPercent);
-        if (isNaN(percent) || percent <= 0 || percent > 100) return alert("Enter percentage (1-100).");
+        if (isNaN(percent) || percent <= 0 || percent > 100) return alert("Enter 1-100.");
         setLoading(true);
         try {
             await piService.withdraw(percent);
@@ -48,38 +42,53 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
         }
     };
 
-    // Shared styles to match reference
+    // Style for the merged container to make input and button look like one unit
+    const rowContainerStyle: React.CSSProperties = {
+        display: 'flex',
+        width: '100%',
+        maxWidth: '380px',
+        height: '55px',
+        backgroundColor: '#ffffff',
+        borderRadius: '15px', // Rounded corners for the whole unit
+        border: '1.5px solid #bcbcbc',
+        overflow: 'hidden', // Ensures the button and input don't spill out
+        marginBottom: '15px'
+    };
+
+    const inputAreaStyle: React.CSSProperties = {
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 15px',
+        position: 'relative'
+    };
+
     const inputStyle: React.CSSProperties = {
         width: '100%',
-        padding: '12px 15px',
-        border: '1.5px solid #bcbcbc',
-        borderRadius: '12px',
-        backgroundColor: '#f9f8f4',
-        fontSize: '16px',
-        color: '#555',
+        border: 'none',
         outline: 'none',
-        textAlign: 'left'
+        fontSize: '18px',
+        backgroundColor: 'transparent',
+        color: '#555'
     };
 
     const buttonStyle: React.CSSProperties = {
-        width: '140px',
+        width: '130px',
         backgroundColor: '#315d43',
         color: '#f7e7b5',
-        padding: '12px 0',
-        borderRadius: '12px',
+        border: 'none',
         fontWeight: 'bold',
         fontSize: '16px',
-        border: 'none',
         cursor: 'pointer',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        transition: 'background 0.2s'
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', width: '100%', alignItems: 'center', padding: '10px 20px' }}>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 15px' }}>
             
-            {/* Investment Row */}
-            <div style={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: '400px', gap: '10px' }}>
-                <div style={{ position: 'relative', flex: 1 }}>
+            {/* Investment Row - Merged Design */}
+            <div style={rowContainerStyle}>
+                <div style={inputAreaStyle}>
                     <input 
                         type="number" 
                         value={investAmount}
@@ -87,20 +96,16 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
                         style={inputStyle}
                         disabled={loading}
                     />
-                    <span style={{ position: 'absolute', right: '15px', top: '12px', color: '#888', fontWeight: 'bold' }}>pi</span>
+                    <span style={{ color: '#888', fontWeight: 'bold', marginLeft: '5px' }}>pi</span>
                 </div>
-                <button 
-                    onClick={handleInvest} 
-                    disabled={loading}
-                    style={buttonStyle}
-                >
+                <button onClick={handleInvest} disabled={loading} style={buttonStyle}>
                     {loading ? "..." : "Invest pi"}
                 </button>
             </div>
 
-            {/* Withdrawal Row */}
-            <div style={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: '400px', gap: '10px' }}>
-                <div style={{ position: 'relative', flex: 1 }}>
+            {/* Withdrawal Row - Merged Design */}
+            <div style={rowContainerStyle}>
+                <div style={inputAreaStyle}>
                     <input 
                         type="number" 
                         value={withdrawPercent}
@@ -108,13 +113,9 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
                         style={inputStyle}
                         disabled={loading}
                     />
-                    <span style={{ position: 'absolute', right: '15px', top: '12px', color: '#888', fontWeight: 'bold' }}>%</span>
+                    <span style={{ color: '#888', fontWeight: 'bold', marginLeft: '5px' }}>%</span>
                 </div>
-                <button 
-                    onClick={handleWithdraw} 
-                    disabled={loading}
-                    style={buttonStyle}
-                >
+                <button onClick={handleWithdraw} disabled={loading} style={buttonStyle}>
                     {loading ? "..." : "Withdraw pi"}
                 </button>
             </div>
