@@ -6,16 +6,20 @@ interface ChartData {
 }
 
 const IpoChart: React.FC<{ data: ChartData[] }> = ({ data }) => {
+    // بيانات تجريبية
     const displayData = data?.length > 1 ? data : [
-        { day: 0, price: 0 }, { day: 1, price: 2 }, { day: 2, price: 4 }
+        { day: 0, price: 0 }, { day: 1, price: 2 }, { day: 2, price: 4 },
+        { day: 3, price: 7 }, { day: 5, price: 8 }, { day: 7, price: 12 },
+        { day: 9, price: 10 }, { day: 11, price: 18 }, { day: 13, price: 17 },
+        { day: 15, price: 24 }
     ];
 
     const width = 450;
     const height = 300;
-    const paddingLeft = 65;   
-    const paddingBottom = 60; 
+    const paddingLeft = 65;
+    const paddingBottom = 60;
     const paddingRight = 30;
-    const paddingTop = 70; // زيادة المساحة العلوية عشان العنوان
+    const paddingTop = 60; // زودنا الـ Padding فوق شوية عشان العنوان ميزنقش الخط
 
     const yScaleMax = 60;
     const xScaleMax = 28;
@@ -33,14 +37,14 @@ const IpoChart: React.FC<{ data: ChartData[] }> = ({ data }) => {
 
     return (
         <div className="w-full flex justify-center py-4 bg-[#f4f1ea]">
-            {/* الكارت الأبيض الرئيسي مع حواف أنعم وظل خفيف */}
-            <div className="relative w-[95%] max-w-[500px] bg-white border-[1px] border-gray-200 shadow-md rounded-2xl overflow-hidden">
+            {/* الحاوية البيضاء الرئيسية */}
+            <div className="relative w-[95%] max-w-[500px] bg-white border-[1.5px] border-gray-300 shadow-lg rounded-xl overflow-hidden pt-12 pb-2 px-2">
                 
-                {/* تعديل العنوان ليكون في المنتصف تماماً */}
-                <div className="w-full text-center pt-5">
-                    <h3 className="text-[#333] font-bold text-[17px] m-0">
+                {/* العنوان - الآن في المنتصف تماماً مع تنسيق أنظف */}
+                <div className="absolute top-4 left-0 right-0 text-center">
+                    <span className="text-gray-700 font-bold text-[16px] font-sans block">
                         MapCap Spot-price
-                    </h3>
+                    </span>
                 </div>
 
                 <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto">
@@ -48,44 +52,53 @@ const IpoChart: React.FC<{ data: ChartData[] }> = ({ data }) => {
                     {[12, 24, 36, 48, 60].map((val) => {
                         const { y } = getCoords(0, val);
                         return (
-                            <line key={val} x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke="#f2f2f2" strokeWidth="1" />
+                            <line key={val} x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke="#f0f0f0" strokeWidth="1" />
+                        );
+                    })}
+                    {[7, 14, 21].map((day) => {
+                        const { x } = getCoords(day, 0);
+                        return (
+                            <line key={day} x1={x} y1={paddingTop} x2={x} y2={height - paddingBottom} stroke="#f0f0f0" strokeWidth="1" />
                         );
                     })}
 
-                    {/* المحاور والأرقام */}
+                    {/* Y-Axis labels */}
                     {[0, 12, 24, 36, 48, 60].map((val) => {
                         const { y } = getCoords(0, val);
                         return (
                             <g key={val}>
-                                <text x={paddingLeft - 10} y={y + 4} textAnchor="end" className="text-[12px] fill-gray-500 font-sans">
+                                <line x1={paddingLeft - 5} y1={y} x2={paddingLeft} y2={y} stroke="#000" strokeWidth="1" />
+                                <text x={paddingLeft - 12} y={y + 5} textAnchor="end" className="text-[12px] fill-gray-600 font-sans">
                                     {val === 0 ? "0 pi" : val.toFixed(1)}
                                 </text>
                             </g>
                         );
                     })}
 
+                    {/* X-Axis labels */}
                     {[0, 7, 14, 21, 28].map((day) => {
                         const { x } = getCoords(day, 0);
                         return (
                             <g key={day}>
-                                <text x={x} y={height - paddingBottom + 25} textAnchor="middle" className="text-[12px] fill-gray-500 font-sans">
+                                <line x1={x} y1={height - paddingBottom} x2={x} y2={height - paddingBottom + 5} stroke="#000" strokeWidth="1" />
+                                <text x={x} y={height - paddingBottom + 25} textAnchor="middle" className="text-[12px] fill-gray-600 font-sans">
                                     {day === 0 ? "Day 0" : day}
                                 </text>
                             </g>
                         );
                     })}
 
-                    {/* برواز الشارط (المربع الأسود) */}
-                    <rect x={paddingLeft} y={paddingTop} width={width-paddingLeft-paddingRight} height={height-paddingTop-paddingBottom} fill="none" stroke="#333" strokeWidth="1" />
+                    {/* Main Axis Borders */}
+                    <rect x={paddingLeft} y={paddingTop} width={width-paddingLeft-paddingRight} height={height-paddingTop-paddingBottom} fill="none" stroke="#000" strokeWidth="1.2" />
 
-                    {/* الخط الأخضر للبيانات */}
+                    {/* Price Line */}
                     <path d={linePath} fill="none" stroke="#007a33" strokeWidth="2" strokeLinejoin="round" />
 
-                    {/* النقط الذهبية - لإضافة لمسة جمالية تليق بـ Map-of-Pi */}
+                    {/* Data points */}
                     {displayData.map((point, i) => {
                         const { x, y } = getCoords(point.day, point.price);
                         return (
-                            <circle key={i} cx={x} cy={y} r="3.5" fill="#ffd700" stroke="#007a33" strokeWidth="1" />
+                            <circle key={i} cx={x} cy={y} r="3" fill="#ffd700" stroke="#007a33" strokeWidth="1" />
                         );
                     })}
                 </svg>
