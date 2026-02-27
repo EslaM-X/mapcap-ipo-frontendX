@@ -1,57 +1,87 @@
-/* Fix for the huge green block and vertical icons */
+/* Core Navbar Styling */
 .navbar-main {
   position: fixed;
-  top: 0; left: 0; right: 0;
-  background-color: #007a33; /* Dark Pi Green */
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #007a33; /* Pi Brand Green */
   z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  padding: 4px 0; /* Reduced padding to save vertical space */
+}
+
+/* Container to handle internal layout */
+.navbar-container {
   display: flex;
   flex-direction: column;
-  padding: 8px 0;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .nav-brand-area {
   width: 100%;
   text-align: center;
-  padding-bottom: 5px;
+  padding: 2px 0;
 }
 
 .nav-title {
-  color: #ffd700; /* Gold */
-  font-size: 18px;
+  color: #ffd700; /* Pi Gold */
+  font-size: 16px; /* Slightly smaller for mobile optimization */
   font-weight: bold;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* This forces icons to be side-by-side */
+/* Horizontal alignment for action icons */
 .nav-icons-row {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  padding: 0 10px;
+  max-width: 500px; /* Limits width on large screens */
+  padding: 0 5px;
 }
 
 .nav-item {
   background: transparent;
   border: none;
   color: #ffd700;
-  padding: 10px;
+  padding: 8px; /* Balanced touch target */
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.nav-item:active {
+  opacity: 0.7;
 }
 
 .nav-item svg {
-  width: 24px;
-  height: 24px;
+  width: 22px; /* Optimized icon size */
+  height: 22px;
 }
 
-/* Map of Pi Pin Effect */
+.opacity-40 {
+  opacity: 0.4;
+}
+
+/* Pi Map Pin Styling - Visual Core */
+.pi-pin-container {
+  padding: 0 10px;
+}
+
 .pi-pin-marker {
   background-color: #004d20;
   border: 2px solid #ffd700;
-  width: 34px;
-  height: 34px;
+  width: 30px; /* Scaled down for mobile */
+  height: 30px;
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
   display: flex;
@@ -63,5 +93,40 @@
   transform: rotate(45deg);
   color: #ffd700;
   font-weight: 900;
-  font-size: 20px;
+  font-size: 18px;
+}
+
+/* --- Responsive Adjustments --- */
+
+/* For Tablets and Desktop (Screens wider than 768px) */
+@media (min-width: 768px) {
+  .navbar-main {
+    padding: 8px 0;
+  }
+  
+  .nav-title {
+    font-size: 20px;
+  }
+
+  .nav-item svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .pi-pin-marker {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* Safety Margin for the Content below the Navbar */
+/* Apply this to your main app wrapper or body in App.css */
+body {
+  padding-top: 85px; /* Adjust this value to ensure the Chart is visible */
+}
+
+@media (min-width: 768px) {
+  body {
+    padding-top: 100px;
+  }
 }
