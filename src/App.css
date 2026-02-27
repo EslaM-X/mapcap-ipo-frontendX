@@ -1,17 +1,17 @@
 /**
  * Global Styles for MapCap IPO Application.
- * Tailored for Pi Network Branding and Mobile Responsiveness.
+ * Synchronized with the updated 80px Navbar height to ensure clear visibility.
  */
 
 :root {
-    --pi-green: #007a33; /* Updated to match Navbar brand green */
+    --pi-green: #007a33; 
     --pi-gold: #ffd700;
-    --pi-bg-cream: #f4f1ea; /* Matches the background in the reference images */
+    --pi-bg-cream: #f4f1ea; 
     --card-bg: #f9f7f0;
     
-    /* Navbar height variables for easy maintenance */
-    --nav-height-mobile: 70px;
-    --nav-height-desktop: 90px;
+    /* Updated heights based on the latest Navbar CSS fixes */
+    --nav-height-mobile: 85px; /* Added 5px buffer for cleaner look */
+    --nav-height-desktop: 100px;
 }
 
 body {
@@ -20,7 +20,7 @@ body {
     padding: 0;
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     color: #333;
-    /* Prevent content from hiding behind the fixed navbar */
+    /* CRITICAL: Ensures content starts below the 80px Navbar */
     padding-top: var(--nav-height-mobile);
 }
 
@@ -35,7 +35,7 @@ body {
     min-height: calc(100vh - var(--nav-height-mobile));
     display: flex;
     flex-direction: column;
-    padding: 15px; /* Adds breathing room on sides */
+    padding: 15px; 
     box-sizing: border-box;
 }
 
@@ -46,7 +46,7 @@ body {
     width: 100%;
 }
 
-/* Glass Card Styling matching the Reference UI */
+/* Glass Card Styling matching the Map of Pi Reference UI */
 .glass-card {
     background: var(--card-bg);
     border-radius: 20px;
@@ -56,20 +56,20 @@ body {
     padding: 15px;
 }
 
-/* Specific Section for the Price Chart */
+/* Specific Section for the Price Chart - Ensures edge-to-edge clarity */
 .chart-section {
     background: #ffffff;
     border-radius: 12px;
     padding: 10px;
     border: 1px solid #d1cfc8;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 /* Typography for Section Headers */
 .section-title {
     font-size: 16px;
     font-weight: 700;
-    color: #2e7d32; /* Using Pi Green for titles */
+    color: #2e7d32; 
     margin: 10px 0;
 }
 
@@ -86,7 +86,7 @@ body {
     color: #444;
 }
 
-/* Utility to ensure responsiveness on small screens */
+/* Responsive adjustments for narrow screens */
 @media (max-width: 480px) {
     .glass-card {
         padding: 10px;
