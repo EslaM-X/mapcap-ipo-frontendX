@@ -9,10 +9,10 @@ import './App.css';
 const App: React.FC = () => {
     const [ipoData, setIpoData] = useState({
         username: "Pioneer",
-        totalInvestors: 0,
-        totalPiInvested: 0,
-        userPiInvested: 0, 
-        capitalGain: 0,
+        totalInvestors: 125,
+        totalPiInvested: 4850.00,
+        userPiInvested: 50.00, 
+        capitalGain: 445.269,
         history: [] 
     });
 
@@ -28,18 +28,20 @@ const App: React.FC = () => {
     useEffect(() => { refreshData(); }, []);
 
     return (
-        <div className="min-h-screen bg-[#f4f1ea] flex flex-col items-center">
-            {/* Navigation Layer */}
+        <div className="min-h-screen bg-[#f4f1ea] flex flex-col">
+            {/* 1. النيفبار ثابت في الأعلى */}
             <Navbar username={ipoData.username} onRefresh={refreshData} />
 
-            {/* Main Content Layer - Optimized for Mobile Viewport */}
-            <main className="w-full max-w-[480px] pt-[85px] flex flex-col pb-12">
+            {/* 2. الحاوية الرئيسية: تم ضبط الـ pt والـ gap لمنع التداخل */}
+            <main className="w-full max-w-[480px] mx-auto pt-[95px] px-0 flex flex-col gap-6 pb-12">
                 
-                {/* 1. Market Chart - Full Width to prevent text overlap */}
-                <IpoChart data={ipoData.history} />
+                {/* قسم الشارت: يُعرض مباشرة بدون Section خارجي */}
+                <div className="w-full">
+                    <IpoChart data={ipoData.history} />
+                </div>
 
-                {/* 2. Statistics Section - Rounded Container */}
-                <div className="px-4">
+                {/* قسم الإحصائيات: يُعرض بداخل مسافة جانبية (px-4) */}
+                <div className="w-full px-4">
                     <StatsBoard 
                         totalInvestors={ipoData.totalInvestors}
                         totalPiInvested={ipoData.totalPiInvested}
@@ -48,8 +50,8 @@ const App: React.FC = () => {
                     />
                 </div>
 
-                {/* 3. User Actions Layer */}
-                <div className="px-4 mt-4">
+                {/* قسم الأزرار: أسفل الإحصائيات مباشرة */}
+                <div className="w-full px-4">
                     <ActionButtons onTransactionSuccess={refreshData} />
                 </div>
 
