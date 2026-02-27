@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
 import { piService } from '../services/piService.ts';
 
+/**
+ * ActionButtons Component
+ * Provides UI controls for Pi Network on-chain investment and withdrawal.
+ * Optimized for mobile touch targets and centered layout alignment.
+ */
 interface ActionProps {
     onTransactionSuccess: () => void;
 }
 
 const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
-    const [investAmount, setInvestAmount] = useState<string>("1.00");
+    const [investAmount, setInvestAmount] = useState<string>("1.0");
     const [withdrawPercent, setWithdrawPercent] = useState<string>("50");
     const [loading, setLoading] = useState<boolean>(false);
 
-    // On-chain investment flow via Pi SDK
+    /**
+     * Triggers the Pi SDK payment flow for IPO investment.
+     * Ensures UI consistency after on-chain finality.
+     */
     const handleInvest = async () => {
         const val = parseFloat(investAmount);
         if (isNaN(val) || val <= 0) return alert("Invalid amount.");
@@ -18,7 +26,6 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
         setLoading(true);
         try {
             await piService.invest(val);
-            // Slight delay to ensure on-chain finality before UI refresh
             setTimeout(async () => {
                 await onTransactionSuccess();
                 alert(`Confirmed: ${val} π added to IPO.`);
@@ -30,7 +37,10 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
         }
     };
 
-    // Withdrawal relay to Backend API
+    /**
+     * Executes the withdrawal request via the backend API.
+     * Updates IPO statistics upon successful processing.
+     */
     const handleWithdraw = async () => {
         const percent = parseFloat(withdrawPercent);
         if (isNaN(percent) || percent <= 0 || percent > 100) {
@@ -50,44 +60,51 @@ const ActionButtons: React.FC<ActionProps> = ({ onTransactionSuccess }) => {
     };
 
     return (
-        <div className="flex flex-col space-y-4 w-full">
-            {/* Investment UI Group */}
-            <div className="flex items-center space-x-2">
+        /* Main Action Container: Flex-col with items-center for perfect centering */
+        <div className="flex flex-col space-y-3 w-full items-center">
+            
+            {/* Investment Row: Input follows the design's left-to-right order */}
+            <div className="flex items-center w-full max-w-[380px] space-x-2">
+                <div className="relative flex-1 max-w-[120px]">
+                    <input 
+                        type="number" 
+                        value={investAmount}
+                        onChange={(e) => setInvestAmount(e.target.value)}
+                        className="w-full p-3 border border-[#d1cfc8] rounded-[15px] text-center font-bold text-black bg-white outline-none"
+                        disabled={loading}
+                    />
+                    <span className="absolute right-3 top-3.5 text-black font-bold text-[14px]">pi</span>
+                </div>
+                
                 <button 
                     onClick={handleInvest} 
                     disabled={loading}
-                    className="flex-1 bg-[#007a33] text-white py-3 rounded-xl font-bold active:scale-95 disabled:opacity-50 transition-all"
+                    className="flex-1 bg-[#4d7c44] text-white py-3 rounded-[15px] font-bold text-[16px] active:scale-95 disabled:opacity-50 transition-all shadow-sm"
                 >
-                    {loading ? "Processing..." : "Invest Pi"}
+                    {loading ? "..." : "Invest pi"}
                 </button>
-                <input 
-                    type="number" 
-                    value={investAmount}
-                    onChange={(e) => setInvestAmount(e.target.value)}
-                    className="w-24 p-3 border border-gray-200 rounded-xl text-center font-bold text-[#007a33] outline-none"
-                    disabled={loading}
-                />
             </div>
 
-            {/* Withdrawal UI Group */}
-            <div className="flex items-center space-x-2">
-                <button 
-                    onClick={handleWithdraw} 
-                    disabled={loading}
-                    className="flex-1 bg-[#007a33] text-white py-3 rounded-xl font-bold active:scale-95 disabled:opacity-50 transition-all"
-                >
-                    Withdraw Pi
-                </button>
-                <div className="relative">
+            {/* Withdrawal Row: Mirroring the design's rounded input and button layout */}
+            <div className="flex items-center w-full max-w-[380px] space-x-2">
+                <div className="relative flex-1 max-w-[120px]">
                     <input 
                         type="number" 
                         value={withdrawPercent}
                         onChange={(e) => setWithdrawPercent(e.target.value)}
-                        className="w-24 p-3 border border-gray-200 rounded-xl text-center font-bold text-[#007a33] pr-6 outline-none"
+                        className="w-full p-3 border border-[#d1cfc8] rounded-[15px] text-center font-bold text-black bg-white outline-none"
                         disabled={loading}
                     />
-                    <span className="absolute right-2 top-3 text-[#007a33] font-bold">%</span>
+                    <span className="absolute right-3 top-3.5 text-black font-bold text-[14px]">%</span>
                 </div>
+
+                <button 
+                    onClick={handleWithdraw} 
+                    disabled={loading}
+                    className="flex-1 bg-[#4d7c44] text-white py-3 rounded-[15px] font-bold text-[16px] active:scale-95 disabled:opacity-50 transition-all shadow-sm"
+                >
+                    Withdraw pi
+                </button>
             </div>
         </div>
     );
