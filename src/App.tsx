@@ -28,20 +28,18 @@ const App: React.FC = () => {
     useEffect(() => { refreshData(); }, []);
 
     return (
-        <div className="min-h-screen bg-[#f4f1ea] flex flex-col">
-            {/* 1. النيفبار ثابت في الأعلى */}
+        <div className="min-h-screen bg-[#f4f1ea] flex flex-col items-center">
+            {/* 1. Header Layer */}
             <Navbar username={ipoData.username} onRefresh={refreshData} />
 
-            {/* 2. الحاوية الرئيسية: تم ضبط الـ pt والـ gap لمنع التداخل */}
-            <main className="w-full max-w-[480px] mx-auto pt-[95px] px-0 flex flex-col gap-6 pb-12">
+            {/* 2. Content Layer - Clean Layout without redundant headings */}
+            <main className="w-full max-w-[480px] pt-[95px] flex flex-col gap-6 pb-12">
                 
-                {/* قسم الشارت: يُعرض مباشرة بدون Section خارجي */}
-                <div className="w-full">
-                    <IpoChart data={ipoData.history} />
-                </div>
+                {/* Chart: Self-contained component with its own frame and title */}
+                <IpoChart data={ipoData.history} />
 
-                {/* قسم الإحصائيات: يُعرض بداخل مسافة جانبية (px-4) */}
-                <div className="w-full px-4">
+                {/* Statistics: Self-contained rounded card with its own title */}
+                <div className="px-4">
                     <StatsBoard 
                         totalInvestors={ipoData.totalInvestors}
                         totalPiInvested={ipoData.totalPiInvested}
@@ -50,8 +48,8 @@ const App: React.FC = () => {
                     />
                 </div>
 
-                {/* قسم الأزرار: أسفل الإحصائيات مباشرة */}
-                <div className="w-full px-4">
+                {/* Action Buttons: Pi Network Integration */}
+                <div className="px-4">
                     <ActionButtons onTransactionSuccess={refreshData} />
                 </div>
 
