@@ -7,45 +7,39 @@ import { piService } from './services/piService.ts';
 import './App.css';
 
 const App: React.FC = () => {
+    // Initial state matching on-chain data structure
     const [ipoData, setIpoData] = useState({
         username: "Pioneer",
-        totalInvestors: 125,
-        totalPiInvested: 4850.00,
-        userPiInvested: 50.00, 
-        capitalGain: 445.269,
+        totalInvestors: 0,
+        totalPiInvested: 0,
+        userPiInvested: 0, 
+        capitalGain: 0,
         history: [] 
     });
 
+    // Sync with Pi Network Sandbox / Backend
     const refreshData = async () => {
         try {
             const data = await piService.getIpoStatus();
             setIpoData(prev => ({ ...prev, ...data }));
         } catch (error) {
-            console.error("Sync failed");
+            console.error("On-chain sync failed");
         }
     };
 
     useEffect(() => { refreshData(); }, []);
 
     return (
-        <div className="app-wrapper min-h-screen bg-[#f4f1ea]">
-            {/* النيفبار ثابت في الأعلى */}
+        <div className="min-h-screen bg-[#f4f1ea] flex flex-col">
             <Navbar username={ipoData.username} onRefresh={refreshData} />
 
-            {/* الحاوية الرئيسية مضبوطة لتطابق عرض شاشة الموبايل في الصورة */}
-            <main className="content pt-[85px] max-w-[450px] mx-auto w-full flex flex-col items-center">
+            <main className="w-full max-w-[480px] mx-auto pt-[90px] flex flex-col gap-2 pb-10">
                 
-                {/* قسم الشارت: تم إزالة العناوين المكررة والـ padding الزائد 
-                   لأن المكون IpoChart أصبح يحتوي على بروازه وعنوانه الخاص
-                */}
-                <div className="w-full">
-                    <IpoChart data={ipoData.history} />
-                </div>
+                {/* Visualizing MapCap Spot-price trend */}
+                <IpoChart data={ipoData.history} />
 
-                {/* قسم الإحصائيات: تم إزالة العناوين المكررة 
-                   لأن المكون StatsBoard يحتوي داخله على العنوان والبرواز الدائري
-                */}
-                <div className="w-full">
+                {/* MapCap Performance Statistics Card */}
+                <div className="px-4">
                     <StatsBoard 
                         totalInvestors={ipoData.totalInvestors}
                         totalPiInvested={ipoData.totalPiInvested}
@@ -54,8 +48,8 @@ const App: React.FC = () => {
                     />
                 </div>
 
-                {/* قسم الأزرار: كما هو لضمان عمل الـ Transaction */}
-                <div className="w-full px-4 mt-2">
+                {/* Transaction Controls (Invest/Withdraw) */}
+                <div className="px-4 mt-2">
                     <ActionButtons onTransactionSuccess={refreshData} />
                 </div>
 
